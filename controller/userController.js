@@ -1,4 +1,5 @@
 import User from "../model/user.js"
+import createToken from "../utils/generateToken.js";
 
 const signup = async (req, res) => {
   const { fullname, email, password, isAdmin } = req.body;
@@ -27,6 +28,7 @@ const login = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) return res.status(400).send({ error: "User doesn't exits of this email!" })
   if (await user.matchedPassword(password)) {
+    createToken(res, user._id)
     res.send({
       message: "Login success", user: {
         fullname: user.fullname,
@@ -38,5 +40,15 @@ const login = async (req, res) => {
     res.status(400).send({ error: "Password doesn't match" })
   }
 }
-export { signup, login };
+
+// const logout = async(req, res) => {
+//   if(req.user){
+//     res.clearCookie('jwt');
+//     res.send({message: "Logout success!"})
+//   }
+//   else{
+//     res.status(400).send({error: "You are not logged in!"})
+//   }
+// }
+export { signup, login};
 

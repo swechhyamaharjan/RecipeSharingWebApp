@@ -4,5 +4,6 @@ import { signup, login } from "../controller/userController.js";
 
  router.post("/signup", signup);
  router.post("/login", login);
+//  router.post("/logout", logout);
 
  export default router;
