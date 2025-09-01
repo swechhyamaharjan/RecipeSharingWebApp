@@ -12,14 +12,21 @@ const signup = async (req, res) => {
     password,
     isAdmin
   })
-  res.send({ message: "User created successfully", User: newUser });
+  res.send({
+    message: "User created successfully", User:
+    {
+      fullname: newUser.fullname,
+      email: newUser.email,
+      isAdmin: newUser.isAdmin
+    }
+  });
 }
 
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) return res.status(400).send({ error: "User doesn't exits of this email!" })
-  if (user.password === password) {
+  if (await user.matchedPassword(password)) {
     res.send({
       message: "Login success", user: {
         fullname: user.fullname,
@@ -27,8 +34,8 @@ const login = async (req, res) => {
         isAdmin: user.isAdmin
       }
     })
-  }else{
-    res.status(400).send({error: "Password doesn't match"})
+  } else {
+    res.status(400).send({ error: "Password doesn't match" })
   }
 }
 export { signup, login };
