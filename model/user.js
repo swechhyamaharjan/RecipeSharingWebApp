@@ -17,10 +17,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
+  bio: {
+    type: String,
+    default: "",
+  },
   isAdmin: {
     type: Boolean,
     default: false
-  }
+  },
 },{
   timestamps: true,
 })
