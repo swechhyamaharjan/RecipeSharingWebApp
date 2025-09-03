@@ -25,6 +25,15 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+    favorites: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }
+  ],
+  recipes: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }
+  ],
+  likedRecipes: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }
+  ]
 },{
   timestamps: true,
 })
