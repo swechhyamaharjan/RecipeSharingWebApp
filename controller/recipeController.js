@@ -78,43 +78,76 @@ const deleteRecipe = async (req, res) => {
   }
 }
 
-const toggleLike = async(req, res)=>{
+const toggleLike = async (req, res) => {
   try {
     const recipeId = req.params.id;
     const userId = req.user._id;
     const recipe = await Recipe.findById(recipeId);
-    if(!recipe){
-      return res.staus(404).send({error: "Recipe not found"})
+    if (!recipe) {
+      return res.staus(404).send({ error: "Recipe not found" })
     }
-    if(recipe.likes.includes(userId)){ //if already liked
+    if (recipe.likes.includes(userId)) { //if already liked
       const updatedRecipe = await Recipe.findByIdAndUpdate(
-       recipeId,
-       {$pull: {likes: userId}}, //unlike
-       {new: true},       
+        recipeId,
+        { $pull: { likes: userId } }, //unlike
+        { new: true },
       );
       await User.findByIdAndUpdate( //update in users
         userId,
-        {$pull: {likedRecipes: recipeId}}
+        { $pull: { likedRecipes: recipeId } }
       )
-      return res.send({message: "Recipe unliked", likes: updatedRecipe.likes.length});
-    }else{ //not like => like
-     const updatedRecipe = await Recipe.findByIdAndUpdate(
+      return res.send({ message: "Recipe unliked", likesCount: updatedRecipe.likes.length });
+    } else { //not like => like
+      const updatedRecipe = await Recipe.findByIdAndUpdate(
         recipeId,
         { $push: { likes: userId } },
-        { new: true } 
+        { new: true }
       );
       await User.findByIdAndUpdate(
         userId,
-        {$push: {likedRecipes: recipeId}}
+        { $push: { likedRecipes: recipeId } }
       )
-      return res.send({ message: "Recipe liked", likes: updatedRecipe.likes.length });
+      return res.send({ message: "Recipe liked", likesCount: updatedRecipe.likes.length });
     }
   } catch (error) {
-     res.status(500).send({ error: error.message });
+    res.status(500).send({ error: error.message });
   }
 }
 
-export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike };
+const toggleFavorite = async (req, res) => {
+  try {
+    const recipeId = req.params.id;
+    const userId = req.user._id;
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      return res.staus(404).send({ error: "Recipe not found" })
+    }
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).send({ error: "User not found" });
+    if (user.favorites.includes(recipeId)) {
+      const updatedUserFav = await User.findByIdAndUpdate(
+        userId,
+        { $pull: { favorites: recipeId }},
+        { new: true }
+      )
+      res.send({ message: "Removed from favorites", favouritesCount: updatedUserFav.favorites.length })
+    }
+    else {
+      const updatedUserFav = await User.findByIdAndUpdate(
+        userId,
+        { $push: { favorites: recipeId }},
+        { new: true }
+      )
+      res.send({ message: "Added to favorites", favouritesCount: updatedUserFav.favorites.length })
+  }
+  }
+  catch (error) {
+  res.status(500).send({ error: error.message });
+  }
+
+}
+
+export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite };
 
 
 
