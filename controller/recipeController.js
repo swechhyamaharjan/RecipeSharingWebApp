@@ -44,37 +44,77 @@ const updateRecipe = async (req, res) => {
     if (!recipe) {
       return res.status(404).send({ error: "Recipe not found" });
     }
-    if (recipe.user.toString()!== req.user._id.toString()){
-     return res.status(403).send({ error: "You are not allowed to update this recipe!"});
+    if (recipe.user.toString() !== req.user._id.toString()) {
+      return res.status(403).send({ error: "You are not allowed to update this recipe!" });
     }
     const updatedRecipe = await Recipe.findByIdAndUpdate(
       recipeId,
       recipeBody,
       { new: true }
     )
-    res.send({message: "Recipe updated successfully", updatedRecipe});
+    res.send({ message: "Recipe updated successfully", updatedRecipe });
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
 }
 
-const deleteRecipe = async(req, res)=>{
+const deleteRecipe = async (req, res) => {
   try {
     const recipeId = req.params.id;
     const recipe = await Recipe.findById(recipeId);
-    if(!recipe){
-      return res.status(404).send({error: "Recipe not found"});
+    if (!recipe) {
+      return res.status(404).send({ error: "Recipe not found" });
     }
-    if(recipe.user.toString()!==req.user._id.toString() && !req.user.isAdmin){
-      return res.status(404).send({error: "You are not allowed to delete the recipe."})
+    if (recipe.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(404).send({ error: "You are not allowed to delete the recipe." })
     }
     await recipe.deleteOne();
+    await User.findByIdAndUpdate(recipe.user, {
+      $pull: { recipes: recipe._id }
+    });
     res.send({ message: "Recipe deleted successfully", recipeId: recipe._id });
   } catch (error) {
-    res.status(500).send({error: error.message});
+    res.status(500).send({ error: error.message });
   }
 }
-export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe };
+
+const toggleLike = async(req, res)=>{
+  try {
+    const recipeId = req.params.id;
+    const userId = req.user._id;
+    const recipe = await Recipe.findById(recipeId);
+    if(!recipe){
+      return res.staus(404).send({error: "Recipe not found"})
+    }
+    if(recipe.likes.includes(userId)){ //if already liked
+      const updatedRecipe = await Recipe.findByIdAndUpdate(
+       recipeId,
+       {$pull: {likes: userId}}, //unlike
+       {new: true},       
+      );
+      await User.findByIdAndUpdate( //update in users
+        userId,
+        {$pull: {likedRecipes: recipeId}}
+      )
+      return res.send({message: "Recipe unliked", likes: updatedRecipe.likes.length});
+    }else{ //not like => like
+     const updatedRecipe = await Recipe.findByIdAndUpdate(
+        recipeId,
+        { $push: { likes: userId } },
+        { new: true } 
+      );
+      await User.findByIdAndUpdate(
+        userId,
+        {$push: {likedRecipes: recipeId}}
+      )
+      return res.send({ message: "Recipe liked", likes: updatedRecipe.likes.length });
+    }
+  } catch (error) {
+     res.status(500).send({ error: error.message });
+  }
+}
+
+export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike };
 
 
 
