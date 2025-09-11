@@ -38,7 +38,7 @@ const recipeSchema = new mongoose.Schema({
       ref: "User"
     }
   ],
-  comments: [
+  comment: [
      {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment"
