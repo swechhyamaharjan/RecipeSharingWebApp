@@ -13,7 +13,12 @@ const checkAuth = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ error: "User not found!" });
     }
-    req.user = user; 
+    req.user = {
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    };
   } catch (error) {
     return res.status(401).json({ error: "Invalid token!" });
   }

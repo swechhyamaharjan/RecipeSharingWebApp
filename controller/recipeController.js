@@ -3,14 +3,15 @@ import User from "../model/user.js"
 
 const addRecipe = async (req, res) => {
   try {
-    const { title, description, ingredients, instruction, image } = req.body;
+    const { title, description, ingredients, instruction, image, category } = req.body;
     const recipe = await Recipe.create({
       user: req.user._id,
       title,
       description,
       ingredients,
       instruction,
-      image
+      image,
+      category
     })
     await User.findByIdAndUpdate(req.user._id, {
       $push: { recipes: recipe._id }
@@ -24,7 +25,9 @@ const addRecipe = async (req, res) => {
 }
 
 const getAllRecipes = async (req, res) => {
-  const recipes = await Recipe.find().populate('user', "fullname email -_id");
+  const recipes = await Recipe.find()
+  .populate('user', "fullname email -_id")
+  .populate("category", "name description -_id");
   res.send(recipes);
 }
 
