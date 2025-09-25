@@ -1,9 +1,17 @@
 import Recipe from "../model/recipe.js";
 import User from "../model/user.js"
+import Category from "../model/category.js";
+
 
 const addRecipe = async (req, res) => {
   try {
     const { title, description, ingredients, instruction, image, category } = req.body;
+
+    const categoryExists = await Category.findById(category);
+    if (!categoryExists) {
+      return res.status(400).json({ error: "Invalid category ID" });
+    }
+
     const recipe = await Recipe.create({
       user: req.user._id,
       title,

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {z} from "zod";
 
 const recipeSchema = new mongoose.Schema({
   user: {
@@ -56,6 +57,18 @@ const recipeSchema = new mongoose.Schema({
 },{
   timestamps: true,
 });
+
+export const recipeAddSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  ingredients: z.array(z.string()).min(1, "At least one ingredient is required"),
+  instruction: z.array(z.string()).min(1, "At least one instruction step is required"),
+  image: z.string().optional(),
+  status: z.enum(["pending", "approved", "rejected"]).default("pending"),
+  category: z.string().min(1, "Category ID is required"),
+})
+
+export const recipeUpdateSchema = recipeAddSchema.partial();
 
 const Recipe = mongoose.model("Recipe", recipeSchema);
 
