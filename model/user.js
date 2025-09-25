@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import {email, z} from "zod";
 
 const userSchema = new mongoose.Schema({
   fullname: {
@@ -49,6 +50,18 @@ userSchema.pre('save', async function(next){
 userSchema.methods.matchedPassword = async function(enteredPassword){
  return await bcrypt.compare(enteredPassword, this.password);
 }
+
+export const userAddSchema = z.object({
+  fullname: z.string().min(6),
+  email: z.string().email(),
+  password: z.string().min(6),
+  isAdmin: z.boolean().default(false)
+})
+
+export const userLoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6)
+})
 
 const User = mongoose.model("User", userSchema);
 
