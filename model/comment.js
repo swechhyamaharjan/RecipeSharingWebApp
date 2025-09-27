@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {z} from "zod";
 
 const commentSchema = new mongoose.Schema({
   user: {
@@ -18,6 +19,12 @@ const commentSchema = new mongoose.Schema({
 }, {
   timestamps: true
 })
+
+export const commentAddSchema = z.object({
+  recipe: z.string().min(1, "Recipe ID is required"),
+  text: z.string().min(1, "Comment text is required"),
+})
+
 
 const Comment = mongoose.model('Comment', commentSchema);
 

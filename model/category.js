@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {z} from "zod";
 
 const categorySchema = new mongoose.Schema({
   name:{
@@ -12,6 +13,11 @@ const categorySchema = new mongoose.Schema({
   }
 }, {
   timestamps: true
+})
+
+export const categoryAddSchema = z.object({
+  name: z.string().min(1, "Category name is required"),
+  description: z.string().optional(),
 })
 
 const Category = mongoose.model("Category", categorySchema);
