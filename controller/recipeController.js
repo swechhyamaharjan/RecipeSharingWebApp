@@ -2,15 +2,20 @@ import Recipe from "../model/recipe.js";
 import User from "../model/user.js"
 import Category from "../model/category.js";
 
-
 const addRecipe = async (req, res) => {
   try {
-    const { title, description, ingredients, instruction, image, category } = req.body;
+    let { title, description, ingredients, instruction, category } = req.body;
+
+    // If strings (from form-data), parse into arrays
+    if (typeof ingredients === "string") ingredients = JSON.parse(ingredients);
+    if (typeof instruction === "string") instruction = JSON.parse(instruction);
+
+    if (!Array.isArray(ingredients) || !Array.isArray(instruction)) {
+      return res.status(400).json({ error: "Ingredients and instruction must be arrays" });
+    }
 
     const categoryExists = await Category.findById(category);
-    if (!categoryExists) {
-      return res.status(400).json({ error: "Invalid category ID" });
-    }
+    if (!categoryExists) return res.status(400).json({ error: "Invalid category ID" });
 
     const recipe = await Recipe.create({
       user: req.user._id,
@@ -18,24 +23,22 @@ const addRecipe = async (req, res) => {
       description,
       ingredients,
       instruction,
-      image,
-      category
-    })
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: { recipes: recipe._id }
-    })
+      image: req.file?.path || "",
+      category,
+    });
 
-    res.send({ message: "Recipe added successfully", Recipe })
+    await User.findByIdAndUpdate(req.user._id, { $push: { recipes: recipe._id } });
+
+    res.json({ message: "Recipe added successfully", recipe });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-}
+};
 
 const getAllRecipes = async (req, res) => {
   const recipes = await Recipe.find()
-  .populate('user', "fullname email -_id")
-  .populate("category", "name description -_id");
+    .populate('user', "fullname email -_id")
+    .populate("category", "name description -_id");
   res.send(recipes);
 }
 
@@ -138,7 +141,7 @@ const toggleFavorite = async (req, res) => {
     if (user.favorites.includes(recipeId)) {
       const updatedUserFav = await User.findByIdAndUpdate(
         userId,
-        { $pull: { favorites: recipeId }},
+        { $pull: { favorites: recipeId } },
         { new: true }
       )
       res.send({ message: "Removed from favorites", favouritesCount: updatedUserFav.favorites.length })
@@ -146,14 +149,14 @@ const toggleFavorite = async (req, res) => {
     else {
       const updatedUserFav = await User.findByIdAndUpdate(
         userId,
-        { $push: { favorites: recipeId }},
+        { $push: { favorites: recipeId } },
         { new: true }
       )
       res.send({ message: "Added to favorites", favouritesCount: updatedUserFav.favorites.length })
-  }
+    }
   }
   catch (error) {
-  res.status(500).send({ error: error.message });
+    res.status(500).send({ error: error.message });
   }
 
 }

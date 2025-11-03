@@ -3,10 +3,12 @@ import checkAuth from "../middlewares/checkAuth.js";
 import { addRecipe, deleteRecipe, getAllRecipes, getRecipeById, toggleFavorite, toggleLike, updateRecipe } from "../controller/recipeController.js";
 import validationHandler from "../middlewares/validationHandler.js";
 import { recipeAddSchema, recipeUpdateSchema } from "../model/recipe.js";
+import { upload } from "./uploadRouter.js";
+
 
 const router = express.Router();
 
-router.post("/", checkAuth, validationHandler(recipeAddSchema), addRecipe);
+router.post("/", checkAuth, upload.single("image"), validationHandler(recipeAddSchema), addRecipe);
 router.get("/", checkAuth, getAllRecipes);
 router.get("/:id", checkAuth, getRecipeById);
 router.put("/:id", checkAuth, validationHandler(recipeUpdateSchema), updateRecipe);
