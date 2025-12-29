@@ -9,7 +9,7 @@ import { upload } from "./uploadRouter.js";
 const router = express.Router();
 
 router.post("/", checkAuth, upload.single("image"), validationHandler(recipeAddSchema), addRecipe);
-router.get("/", checkAuth, getAllRecipes);
+router.get("/", getAllRecipes);
 router.get("/:id", checkAuth, getRecipeById);
 router.put("/:id", checkAuth, validationHandler(recipeUpdateSchema), updateRecipe);
 router.delete("/:id", checkAuth, deleteRecipe);
