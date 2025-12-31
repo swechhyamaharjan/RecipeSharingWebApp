@@ -8,8 +8,16 @@ const recipeApiSlice = apiSlice.injectEndpoints({
           url: RECIPE_URL,    
         }),
         keepUnusedDataFor: 5,
+        providesTags: ['Recipe']
+      }),
+      getRecipeById: builder.query({
+        query: (id)=>({
+          url: `${RECIPE_URL}/${id}`
+        }),
+        keepUnusedDataFor: 5,
+        providesTags: ['Recipe']
       })
     })
 })
 
-export const {useGetRecipesQuery} = recipeApiSlice;
+export const {useGetRecipesQuery, useGetRecipeByIdQuery} = recipeApiSlice;

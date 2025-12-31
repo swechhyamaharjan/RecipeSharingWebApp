@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/", checkAuth, upload.single("image"), validationHandler(recipeAddSchema), addRecipe);
 router.get("/", getAllRecipes);
-router.get("/:id", checkAuth, getRecipeById);
+router.get("/:id", getRecipeById);
 router.put("/:id", checkAuth, validationHandler(recipeUpdateSchema), updateRecipe);
 router.delete("/:id", checkAuth, deleteRecipe);
 router.post("/:id/like", checkAuth, toggleLike);
