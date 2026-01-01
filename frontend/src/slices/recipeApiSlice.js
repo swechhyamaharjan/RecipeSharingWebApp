@@ -16,8 +16,15 @@ const recipeApiSlice = apiSlice.injectEndpoints({
         }),
         keepUnusedDataFor: 5,
         providesTags: ['Recipe']
+      }),
+      addRecipe: builder.mutation({
+        query: ()=>({
+          url: RECIPE_URL,
+          method: POST
+        }),
+        invalidatesTags: ["Recipe"],
       })
     })
 })
 
-export const {useGetRecipesQuery, useGetRecipeByIdQuery} = recipeApiSlice;
+export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation} = recipeApiSlice;
