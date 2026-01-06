@@ -1,15 +1,16 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLoginMutation } from '../slices/userapiSlice'
 import { setCredentials } from '../slices/authSlice'
 import { toast } from 'react-toastify'
 import {useNavigate} from "react-router"
+import Loader from "../components/Loader"
+
 
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [login, {isLoading}] = useLoginMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const Signin = () => {
             className='w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600'>
             Sign in
           </button>
+          {isLoading && <Loader/> }
         </form>
  
       <p className='text-center text-gray-500 mt-6'>Don't have an account? {" "}
