@@ -9,7 +9,8 @@ const addCatergory = async (req, res) => {
     }
     const category = await Category.create({
       name,
-      description
+      description,
+      image: req.file?.path || "",
     })
     res.send(category);
   } catch (error) {
