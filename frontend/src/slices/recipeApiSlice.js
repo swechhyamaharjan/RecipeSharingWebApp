@@ -18,9 +18,10 @@ const recipeApiSlice = apiSlice.injectEndpoints({
         providesTags: ['Recipe']
       }),
       addRecipe: builder.mutation({
-        query: ()=>({
+        query: (data)=>({
           url: RECIPE_URL,
-          method: POST
+          method: "POST",
+          body: data,
         }),
         invalidatesTags: ["Recipe"],
       })
