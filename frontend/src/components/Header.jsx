@@ -97,6 +97,12 @@ const Header = () => {
                   Profile
                 </NavLink>
 
+                 <NavLink
+                  to="/my-recipes"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" >
+                  My Recipes
+                </NavLink>
+
                 <NavLink
                   to="/bookmarks"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">

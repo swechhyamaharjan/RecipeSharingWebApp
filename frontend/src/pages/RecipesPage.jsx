@@ -2,7 +2,7 @@ import React from "react";
 import { useGetRecipesQuery } from "../slices/recipeApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { Link, } from "react-router";
+import { Link } from "react-router";
 import { Heart, Star, ChefHat } from "lucide-react";
 
 const RecipePage = () => {

@@ -4,6 +4,7 @@ import Message from '../components/Message';
 import { FaHeart, FaStar } from "react-icons/fa";
 import { useGetCategoriesQuery } from '../slices/categoryApiSlice'
 import { useGetRecipesQuery } from '../slices/recipeApiSlice';
+import { Link } from 'react-router';
 
 const HomePage = () => {
   const { data: categories, isLoading, error } = useGetCategoriesQuery();
@@ -53,8 +54,9 @@ const HomePage = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Top Recipes</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {recipes?.slice(0,5).map((recipe)=>(
-              <div
+              <Link
                 key={recipe._id}
+                to={`/recipe/${recipe._id}`}
                 className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
               >
                 <div className="relative">
@@ -79,7 +81,7 @@ const HomePage = () => {
                     {recipe.title}
                   </h3>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -89,8 +91,9 @@ const HomePage = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Browse All Recipes</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recipes.map((recipe)=>(
-              <div
+              <Link
                 key={recipe._id}
+                to={`/recipe/${recipe._id}`}
                 className="bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
               >
                 <img 
@@ -116,7 +119,7 @@ const HomePage = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

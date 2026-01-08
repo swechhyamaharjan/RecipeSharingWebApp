@@ -49,6 +49,12 @@ const getRecipeById = async (req, res) => {
     return res.status(404).send({ error: "Recipe not Found!" });
   res.send(recipe);
 }
+const getMyRecipes = async(req, res)=>{
+  const myRecipes = await Recipe.find({user: req.user._id})
+  .populate('category', 'name -_id')
+  .sort({createdAt: -1});
+  res.send(myRecipes);
+}
 
 const updateRecipe = async (req, res) => {
   try {
@@ -161,7 +167,7 @@ const toggleFavorite = async (req, res) => {
 
 }
 
-export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite };
+export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite, getMyRecipes };
 
 
 

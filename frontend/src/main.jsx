@@ -13,6 +13,7 @@ import CreateRecipe from './pages/CreateRecipe.jsx'
 import Signin from './pages/Signin.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import PrivatePage from './pages/PrivatePage.jsx'
+import MyRecipes from './pages/MyRecipes.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='register' element={<RegisterPage />}></Route>
         <Route path='' element={<PrivatePage />}>
         <Route path='create-recipe' element={<CreateRecipe/>}></Route>
+        <Route path='my-recipes' element={<MyRecipes/>}></Route>
         </Route>
       </Route>
     </Routes>

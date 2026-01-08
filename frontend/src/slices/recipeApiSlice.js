@@ -24,8 +24,15 @@ const recipeApiSlice = apiSlice.injectEndpoints({
           body: data,
         }),
         invalidatesTags: ["Recipe"],
+      }),
+      getMyRecipes: builder.query({
+        query: ()=>({
+          url: `${RECIPE_URL}/myRecipe`,
+          method: "GET",
+        }),
+        providesTags: ["Recipe"],
       })
     })
 })
 
-export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation} = recipeApiSlice;
+export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation, useGetMyRecipesQuery} = recipeApiSlice;
