@@ -31,6 +31,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='' element={<PrivatePage />}>
         <Route path='create-recipe' element={<CreateRecipe/>}></Route>
         <Route path='my-recipes' element={<MyRecipes/>}></Route>
+        <Route path='edit-recipe/:id' element={<CreateRecipe/>}></Route>
         </Route>
       </Route>
     </Routes>

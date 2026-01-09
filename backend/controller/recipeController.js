@@ -18,6 +18,7 @@ const addRecipe = async (req, res) => {
     if (!categoryExists) return res.status(400).json({ error: "Invalid category ID" });
 
     const recipe = await Recipe.create({
+      ...req.body,
       user: req.user._id,
       title,
       description,
@@ -49,10 +50,10 @@ const getRecipeById = async (req, res) => {
     return res.status(404).send({ error: "Recipe not Found!" });
   res.send(recipe);
 }
-const getMyRecipes = async(req, res)=>{
-  const myRecipes = await Recipe.find({user: req.user._id})
-  .populate('category', 'name -_id')
-  .sort({createdAt: -1});
+const getMyRecipes = async (req, res) => {
+  const myRecipes = await Recipe.find({ user: req.user._id })
+    .populate('category', 'name -_id')
+    .sort({ createdAt: -1 });
   res.send(myRecipes);
 }
 
@@ -67,10 +68,23 @@ const updateRecipe = async (req, res) => {
     if (recipe.user.toString() !== req.user._id.toString()) {
       return res.status(403).send({ error: "You are not allowed to update this recipe!" });
     }
+    // If an image changed use it, otherwise keep existing
+    const image = req.file ? req.file.path : recipe.image;
+
     const updatedRecipe = await Recipe.findByIdAndUpdate(
       recipeId,
-      recipeBody,
-      { new: true }
+      {
+        title: recipeBody.title,
+        description: recipeBody.description,
+        ingredients: JSON.parse(req.body.ingredients),
+        instruction: JSON.parse(req.body.instruction),
+        category: recipeBody.category,
+        image,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
     )
     res.send({ message: "Recipe updated successfully", updatedRecipe });
   } catch (error) {

@@ -1,16 +1,25 @@
 import { useGetCategoriesQuery } from '../slices/categoryApiSlice'
-import { useAddRecipeMutation } from '../slices/recipeApiSlice';
-import { useState } from 'react';
+import { useAddRecipeMutation, useGetRecipeByIdQuery, useEditRecipeMutation } from '../slices/recipeApiSlice';
+import { useEffect, useState } from 'react';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 const CreateRecipe = () => {
+  const { id } = useParams();
+  const isEdit = Boolean(id);
+  const { data: recipe, isLoading: recipeLoading } = useGetRecipeByIdQuery(id, { skip: !isEdit })
+  const [editRecipe, { isLoading: updating }] = useEditRecipeMutation();
+  const [addRecipe, { isLoading: creating }] = useAddRecipeMutation();
   const { data: categories, isLoading: loadingCategories } = useGetCategoriesQuery();
-  const [addRecipe, { isLoading, error }] = useAddRecipeMutation();
   const { userInfo } = useSelector((state) => state.auth);
+  
+  const isSubmitting = creating || updating;
+
+  const navigate = useNavigate();
+
   const [formData, setformData] = useState({
     title: "",
     description: "",
@@ -19,51 +28,66 @@ const CreateRecipe = () => {
     category: "",
     image: null,
   })
-  const navigate = useNavigate();
 
-  const handleChange = (e)=>{
-    const {name, value, files} = e.target;
+  useEffect(() => {
+    if (isEdit && recipe) {
+      setformData({
+        title: recipe.title,
+        description: recipe.description,
+        ingredients: recipe.ingredients,
+        instruction: recipe.instruction,
+        category: recipe.category,
+        image: null
+      })
+    }
+  }, [isEdit, recipe])
 
-    if (name === "image"){
-      setformData({...formData, image: files[0]});
-    }else{
-      setformData({...formData, [name]: value});
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    if (name === "image") {
+      setformData({ ...formData, image: files[0] });
+    } else {
+      setformData({ ...formData, [name]: value });
     }
   }
-const handleArrayChange = (index, value, field)=>{
-   const newArray = [...formData[field]];
-   newArray[index] = value;
-   setformData({...formData, [field]: newArray})
-}
-const addField = (field) => {
-  setformData({...formData, [field]: [...formData[field], ""]});
-}
-const removeField = (index, field) => {
-   const newArray = formData[field].filter((item, i) => i !== index);
-   setformData({ ...formData, [field]: newArray.length ? newArray : [""] });
-}
+  const handleArrayChange = (index, value, field) => {
+    const newArray = [...formData[field]];
+    newArray[index] = value;
+    setformData({ ...formData, [field]: newArray })
+  }
+  const addField = (field) => {
+    setformData({ ...formData, [field]: [...formData[field], ""] });
+  }
+  const removeField = (index, field) => {
+    const newArray = formData[field].filter((item, i) => i !== index);
+    setformData({ ...formData, [field]: newArray.length ? newArray : [""] });
+  }
 
 
 
-  const submitHandler = async(e)=>{
+  const submitHandler = async (e) => {
     e.preventDefault();
-    if(!userInfo){
+    if (!userInfo) {
       toast.error("Please sign in first");
       return;
     }
     try {
-     const data = new FormData();
-     data.append("title", formData.title);
-     data.append("description", formData.description);
-     data.append("ingredients", JSON.stringify(formData.ingredients));
-     data.append("instruction", JSON.stringify(formData.instruction));
-     data.append("category", formData.category);
-     data.append("image", formData.image);
-
-     const res = await addRecipe(data).unwrap();
-
-     toast.success(res.message);
-     navigate("/recipes");
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("description", formData.description);
+      data.append("ingredients", JSON.stringify(formData.ingredients));
+      data.append("instruction", JSON.stringify(formData.instruction));
+      data.append("category", formData.category);
+      data.append("image", formData.image);
+      if (isEdit) {
+        await editRecipe({ id, data }).unwrap();
+        toast.success("Recipe updated successfully");
+      } else {
+        await addRecipe({ data }).unwrap();
+        toast.success("Recipe added successfully");
+      }
+      navigate("/my-recipes")
     } catch (err) {
       toast.error(err?.data?.error || err?.error)
     }
@@ -72,10 +96,12 @@ const removeField = (index, field) => {
   return (
     <div>
       <div className='max-w-3xl mx-auto px-4 py-10'>
-        <h2 className='text-3xl font-bold text-center mb-8 text-green-500'>Create Recipes</h2>
+        <h2 className='text-3xl font-bold text-center mb-8 text-green-500'>
+          {isEdit ? "Edit Recipe" : "Create Recipe"}
+        </h2>
 
         <form className='bg-white shadow-md rounded-lg p-8 space-y-5'
-        onSubmit={submitHandler}>
+          onSubmit={submitHandler}>
           <div>
             <label className='block text-gray-700 font-medium mb-1'>Recipe Title</label>
             <input type='text'
@@ -170,8 +196,8 @@ const removeField = (index, field) => {
           <div>
             <label className='block text-gray-700 font-medium mb-1'>Category</label>
             <select name='category'
-            value={formData.category}
-            onChange={handleChange}
+              value={formData.category}
+              onChange={handleChange}
               className='w-44 px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400'
               required>
               <option value=''>Select Category</option>
@@ -184,7 +210,7 @@ const removeField = (index, field) => {
           </div>
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              Image 
+              Image
             </label>
             <input
               type="file"
@@ -196,10 +222,11 @@ const removeField = (index, field) => {
           </div>
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition">
-            {isLoading ? "Adding..." : "Add Recipe"}
+            disabled={isSubmitting} className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition">
+            {isSubmitting ? isEdit ? "Updating..." : "Adding..."
+              : isEdit ? "Update Recipe" : "Add Recipe"}
           </button>
+
         </form>
         {loadingCategories && <Loader />}
       </div>

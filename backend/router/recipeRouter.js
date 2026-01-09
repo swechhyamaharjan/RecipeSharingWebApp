@@ -12,7 +12,7 @@ router.post("/", checkAuth, upload.single("image"), validationHandler(recipeAddS
 router.get("/", getAllRecipes);
 router.get('/myRecipe', checkAuth, getMyRecipes);
 router.get("/:id", getRecipeById);
-router.put("/:id", checkAuth, validationHandler(recipeUpdateSchema), updateRecipe);
+router.put("/:id", checkAuth, upload.single("image"), validationHandler(recipeUpdateSchema), updateRecipe);
 router.delete("/:id", checkAuth, deleteRecipe);
 router.post("/:id/like", checkAuth, toggleLike);
 router.post("/:id/fav", checkAuth, toggleFavorite);

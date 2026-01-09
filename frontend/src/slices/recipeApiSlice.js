@@ -31,8 +31,16 @@ const recipeApiSlice = apiSlice.injectEndpoints({
           method: "GET",
         }),
         providesTags: ["Recipe"],
-      })
+      }),
+      editRecipe: builder.mutation({
+        query: ({id, data})=>({
+          url: `${RECIPE_URL}/${id}`,
+          body: data,
+          method: "PUT"
+        })
+      }),
+      invalidatesTags: ["Recipe"]
     })
 })
 
-export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation, useGetMyRecipesQuery} = recipeApiSlice;
+export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation, useGetMyRecipesQuery, useEditRecipeMutation} = recipeApiSlice;
