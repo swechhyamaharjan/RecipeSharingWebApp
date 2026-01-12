@@ -37,10 +37,24 @@ const recipeApiSlice = apiSlice.injectEndpoints({
           url: `${RECIPE_URL}/${id}`,
           body: data,
           method: "PUT"
-        })
+        }),
+        invalidatesTags: ["Recipe"]
       }),
-      invalidatesTags: ["Recipe"]
+    toggleLike: builder.mutation({
+      query: (id)=>({
+         url: `${RECIPE_URL}/${id}/like`,
+         method: 'POST'
+      }),
+      invalidatesTags: ["Recipe"],
+    }),
+    toggleFavorite: builder.mutation({
+      query: (id) => ({
+        url: `${RECIPE_URL}/${id}/fav`,
+        method: "POST"
+      }),
+      invalidatesTags: ['Recipe'],
     })
+  })
 })
 
-export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation, useGetMyRecipesQuery, useEditRecipeMutation} = recipeApiSlice;
+export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation, useGetMyRecipesQuery, useEditRecipeMutation, useToggleLikeMutation, useToggleFavoriteMutation} = recipeApiSlice;

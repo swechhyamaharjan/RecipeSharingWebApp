@@ -1,16 +1,22 @@
 import React from "react";
 import { useParams } from "react-router";
-import { useGetRecipeByIdQuery } from "../slices/recipeApiSlice";
+import { useGetRecipeByIdQuery, useToggleFavoriteMutation, useToggleLikeMutation } from "../slices/recipeApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { FaHeart, FaBookmark, FaStar } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Recipe = () => {
   const { id } = useParams();
   const { data: recipe, isLoading, error } = useGetRecipeByIdQuery(id);
+  const {userInfo} = useSelector((state)=>state.auth);
+  const [toggleLike, {isLoading: liking}] = useToggleLikeMutation();
+  const [toggleFav, {isLoading: bookmarking}] = useToggleFavoriteMutation();
 
   if (isLoading) return <Loader />;
   if (error) return <Message>{error.message || "Failed to load recipe"}</Message>;
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-stone-100">
