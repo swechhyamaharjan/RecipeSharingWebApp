@@ -118,7 +118,7 @@ const toggleLike = async (req, res) => {
     const userId = req.user._id;
     const recipe = await Recipe.findById(recipeId);
     if (!recipe) {
-      return res.staus(404).send({ error: "Recipe not found" })
+      return res.status(404).send({ error: "Recipe not found" })
     }
     if (recipe.likes.includes(userId)) { //if already liked
       const updatedRecipe = await Recipe.findByIdAndUpdate(
@@ -152,34 +152,41 @@ const toggleFavorite = async (req, res) => {
   try {
     const recipeId = req.params.id;
     const userId = req.user._id;
+
     const recipe = await Recipe.findById(recipeId);
-    if (!recipe) {
-      return res.staus(404).send({ error: "Recipe not found" })
-    }
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).send({ error: "User not found" });
-    if (user.favorites.includes(recipeId)) {
-      const updatedUserFav = await User.findByIdAndUpdate(
+    if (!recipe) return res.status(404).send({ error: "Recipe not found" });
+
+    const isFav = recipe.favorites.includes(userId);
+
+    if (isFav) {
+      await Recipe.findByIdAndUpdate(
+        recipeId,
+        { $pull: { favorites: userId } }
+      );
+
+      await User.findByIdAndUpdate(
         userId,
-        { $pull: { favorites: recipeId } },
-        { new: true }
-      )
-      res.send({ message: "Removed from favorites", favouritesCount: updatedUserFav.favorites.length })
-    }
-    else {
-      const updatedUserFav = await User.findByIdAndUpdate(
+        { $pull: { favorites: recipeId } }
+      );
+
+      return res.send({ message: "Removed from favorites" });
+    } else {
+      await Recipe.findByIdAndUpdate(
+        recipeId,
+        { $push: { favorites: userId } }
+      );
+
+      await User.findByIdAndUpdate(
         userId,
-        { $push: { favorites: recipeId } },
-        { new: true }
-      )
-      res.send({ message: "Added to favorites", favouritesCount: updatedUserFav.favorites.length })
+        { $push: { favorites: recipeId } }
+      );
+
+      return res.send({ message: "Added to favorites" });
     }
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).send({ error: error.message });
   }
-
-}
+};
 
 export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite, getMyRecipes };
 

@@ -45,14 +45,14 @@ const recipeApiSlice = apiSlice.injectEndpoints({
          url: `${RECIPE_URL}/${id}/like`,
          method: 'POST'
       }),
-      invalidatesTags: ["Recipe"],
+      invalidatesTags: ["Recipe", "User"],
     }),
     toggleFavorite: builder.mutation({
       query: (id) => ({
         url: `${RECIPE_URL}/${id}/fav`,
         method: "POST"
       }),
-      invalidatesTags: ['Recipe'],
+      invalidatesTags: ["Recipe", "User"],
     })
   })
 })

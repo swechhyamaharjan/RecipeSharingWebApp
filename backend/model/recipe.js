@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {z} from "zod";
+import { z } from "zod";
 
 const recipeSchema = new mongoose.Schema({
   user: {
@@ -28,11 +28,11 @@ const recipeSchema = new mongoose.Schema({
   image: {
     type: String,
   },
- status: {
-  type: String,
-  enum: ["pending", "approved", "rejected"], 
-  default: "pending"
-},
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending"
+  },
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,7 +40,7 @@ const recipeSchema = new mongoose.Schema({
     }
   ],
   comment: [
-     {
+    {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment"
     }
@@ -53,8 +53,14 @@ const recipeSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
     required: true
-  }
-},{
+  },
+  favorites: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }
+  ],
+}, {
   timestamps: true,
 });
 

@@ -5,26 +5,56 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { FaHeart, FaBookmark, FaStar } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const Recipe = () => {
   const { id } = useParams();
   const { data: recipe, isLoading, error } = useGetRecipeByIdQuery(id);
-  const {userInfo} = useSelector((state)=>state.auth);
-  const [toggleLike, {isLoading: liking}] = useToggleLikeMutation();
-  const [toggleFav, {isLoading: bookmarking}] = useToggleFavoriteMutation();
+  const { userInfo } = useSelector((state) => state.auth);
+  const [toggleLike, { isLoading: liking }] = useToggleLikeMutation();
+  const [toggleFav, { isLoading: bookmarking }] = useToggleFavoriteMutation();
 
   if (isLoading) return <Loader />;
   if (error) return <Message>{error.message || "Failed to load recipe"}</Message>;
 
+  const isLiked = recipe?.likes?.includes(userInfo?._id)
+  const isBookmarked = recipe?.favorites?.includes(userInfo?._id)
 
+
+  const handleLike = async () => {
+    if (!userInfo) {
+      toast.error("Please signin to like this recipe!!")
+      return;
+    }
+    try {
+      const res = await toggleLike(id).unwrap();
+      toast.success(res.message);
+    } catch (err) {
+      toast.error(err?.data?.error || err?.error)
+    }
+  }
+
+  const handleFavorite = async () => {
+    if (!userInfo) {
+      toast.error("Please signin to bookmark this recipe!!")
+      return;
+    }
+    try {
+      const res = await toggleFav(id).unwrap();
+      toast.success(res.message);
+    } catch (err) {
+      toast.error(err?.data?.error || err?.error)
+    }
+  }
+    console.log(isBookmarked, recipe.favorites, userInfo?._id)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-stone-100">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        
+
         {/* TOP SECTION */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-          
+
           {/* Image */}
           <div className="group">
             <img
@@ -53,14 +83,34 @@ const Recipe = () => {
 
             {/* Like & Bookmark */}
             <div className="flex items-center gap-4 mb-8">
-              <button className="flex items-center gap-3 bg-white px-6 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 border border-stone-200">
-                <FaHeart className="text-red-400 text-lg" />
-                <span className="font-semibold text-stone-700">{recipe.likes.length} Likes</span>
+              <button 
+                onClick={handleLike}
+                disabled={liking}
+                className={`flex items-center gap-3 px-6 py-3 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 
+                ${isLiked 
+                  ? "bg-gradient-to-r from-red-50 to-pink-50 border-red-400 shadow-red-200" 
+                  : "bg-white border-stone-200 hover:border-red-300"
+                }`}
+              >
+                <FaHeart className={`text-xl transition-all duration-300 ${isLiked ? "text-red-500 animate-pulse" : "text-stone-400"}`} />
+                <span className={`font-semibold ${isLiked ? "text-red-600" : "text-stone-600"}`}>
+                  {recipe.likes.length} {recipe.likes.length === 1 ? "Like" : "Likes"}
+                </span>
               </button>
 
-              <button className="flex items-center gap-3 bg-white px-6 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 border border-stone-200">
-                <FaBookmark className="text-stone-600 text-lg" />
-                <span className="font-semibold text-stone-700">Bookmark</span>
+              <button
+                onClick={handleFavorite}
+                disabled={bookmarking}
+                className={`flex items-center gap-3 px-6 py-3 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 border-2
+                ${isBookmarked 
+                  ? "bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-400 shadow-emerald-200" 
+                  : "bg-white border-stone-200 hover:border-emerald-300"
+                }`}
+              >
+                <FaBookmark className={`text-xl transition-all duration-300 ${isBookmarked ? "text-emerald-600 scale-110" : "text-stone-400"}`} />
+                <span className={`font-semibold ${isBookmarked ? "text-emerald-700" : "text-stone-600"}`}>
+                  {isBookmarked ? "Bookmarked" : "Bookmark"}
+                </span>
               </button>
             </div>
 
@@ -75,7 +125,7 @@ const Recipe = () => {
 
         {/* INGREDIENTS & INSTRUCTIONS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-          
+
           {/* Ingredients */}
           <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-stone-200">
             <div className="flex items-center gap-3 mb-6">
@@ -161,18 +211,9 @@ const Recipe = () => {
             <button className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-xl hover:scale-105 transition-all duration-300">
               Submit
             </button>
-
-            <div className="flex gap-4">
-              <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-105 transition-all font-medium border border-red-200">
-                <FaHeart /> Like
-              </button>
-              <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-stone-100 text-stone-700 hover:bg-stone-200 hover:scale-105 transition-all font-medium border border-stone-300">
-                <FaBookmark /> Bookmark
-              </button>
-            </div>
           </div>
         </div>
-        
+
       </div>
     </div>
   );
