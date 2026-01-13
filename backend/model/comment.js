@@ -21,7 +21,6 @@ const commentSchema = new mongoose.Schema({
 })
 
 export const commentAddSchema = z.object({
-  recipe: z.string().min(1, "Recipe ID is required"),
   text: z.string().min(1, "Comment text is required"),
 })
 

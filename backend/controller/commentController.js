@@ -6,6 +6,7 @@ const addComment = async (req, res) => {
   try {
     const recipeId = req.params.id;
     const { text } = req.body;
+
     const comment = await Comment.create({
       user: req.user._id,
       recipe: recipeId,
@@ -53,7 +54,7 @@ const deleteComments = async (req, res) => {
     }
     await comment.deleteOne();
 
-    // **Remove comment reference from the Recipe too
+    // Remove comment reference from the Recipe too
     await Recipe.findByIdAndUpdate(comment.recipe, {
       $pull: { comment: comment._id }
     });

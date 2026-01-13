@@ -1,16 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import { useGetRecipeByIdQuery, useToggleFavoriteMutation, useToggleLikeMutation } from "../slices/recipeApiSlice";
+import { useGetCommentsQuery, useAddCommentMutation, useDeleteCommentMutation} from "../slices/commentApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { FaHeart, FaBookmark, FaStar } from "react-icons/fa";
+import { FaHeart, FaBookmark, FaStar, FaTrash } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const Recipe = () => {
   const { id } = useParams();
-  const { data: recipe, isLoading, error } = useGetRecipeByIdQuery(id);
   const { userInfo } = useSelector((state) => state.auth);
+  const { data: recipe, isLoading, error } = useGetRecipeByIdQuery(id);
+  const { data: comments, isLoading: commentLoading, error: commentErr } = useGetCommentsQuery(id);
+  const [addComment, { isLoading: addingComment }] = useAddCommentMutation();
+  const [deleteComment] = useDeleteCommentMutation();
+  const [comment, setComment] = useState("");
   const [toggleLike, { isLoading: liking }] = useToggleLikeMutation();
   const [toggleFav, { isLoading: bookmarking }] = useToggleFavoriteMutation();
 
@@ -46,7 +51,28 @@ const Recipe = () => {
       toast.error(err?.data?.error || err?.error)
     }
   }
-    console.log(isBookmarked, recipe.favorites, userInfo?._id)
+
+  const handleAddComment = async () => {
+    if (!comment.trim()) return; // ignore empty
+    try {
+      const res = await addComment({id, text: comment}).unwrap();
+      toast.success(res.message);
+      setComment("");
+    } catch (error) {
+      toast.error(error?.data?.message || error?.error)
+    }
+  }
+
+  const handleDeleteComment = async (commentId) => {
+    if (window.confirm("Are you sure you want to delete this comment?")){
+      try {
+        const res = await deleteComment(commentId).unwrap();
+        toast.success(res.message);
+      } catch (error) {
+        toast.error(error?.data?.message || error?.error);
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-stone-100">
@@ -83,14 +109,14 @@ const Recipe = () => {
 
             {/* Like & Bookmark */}
             <div className="flex items-center gap-4 mb-8">
-              <button 
+              <button
                 onClick={handleLike}
                 disabled={liking}
                 className={`flex items-center gap-3 px-6 py-3 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 
-                ${isLiked 
-                  ? "bg-gradient-to-r from-red-50 to-pink-50 border-red-400 shadow-red-200" 
-                  : "bg-white border-stone-200 hover:border-red-300"
-                }`}
+                ${isLiked
+                    ? "bg-gradient-to-r from-red-50 to-pink-50 border-red-400 shadow-red-200"
+                    : "bg-white border-stone-200 hover:border-red-300"
+                  }`}
               >
                 <FaHeart className={`text-xl transition-all duration-300 ${isLiked ? "text-red-500 animate-pulse" : "text-stone-400"}`} />
                 <span className={`font-semibold ${isLiked ? "text-red-600" : "text-stone-600"}`}>
@@ -102,10 +128,10 @@ const Recipe = () => {
                 onClick={handleFavorite}
                 disabled={bookmarking}
                 className={`flex items-center gap-3 px-6 py-3 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 border-2
-                ${isBookmarked 
-                  ? "bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-400 shadow-emerald-200" 
-                  : "bg-white border-stone-200 hover:border-emerald-300"
-                }`}
+                ${isBookmarked
+                    ? "bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-400 shadow-emerald-200"
+                    : "bg-white border-stone-200 hover:border-emerald-300"
+                  }`}
               >
                 <FaBookmark className={`text-xl transition-all duration-300 ${isBookmarked ? "text-emerald-600 scale-110" : "text-stone-400"}`} />
                 <span className={`font-semibold ${isBookmarked ? "text-emerald-700" : "text-stone-600"}`}>
@@ -175,23 +201,54 @@ const Recipe = () => {
             Ratings & Reviews
           </h2>
 
-          {/* Example review */}
-          <div className="bg-gradient-to-br from-stone-50 to-neutral-100 p-6 rounded-2xl border border-stone-200">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                  U
+          {/* Comments */}
+          <div className="space-y-6">
+            {commentLoading ? (
+              <Loader />
+            ) : commentErr ? (
+              <Message>{commentErr.message || "Error loading comments"}</Message>
+            ) : comments && comments.length > 0 ? (
+              comments.map((comment) => (
+                <div key={comment._id} className="bg-gradient-to-br from-stone-50 to-neutral-100 p-6 rounded-2xl border border-stone-200 hover:shadow-md transition-shadow duration-300">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                        {comment.user.fullname[0].toUpperCase()}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-stone-800 block">
+                          {comment.user.fullname}
+                        </span>
+                        <span className="text-xs text-stone-500">
+                          {new Date(comment.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 bg-amber-100 px-4 py-2 rounded-full border border-amber-200">
+                      <FaStar className="text-amber-500" />
+                      <span className="font-bold text-amber-700">4.5</span>
+                    </div>
+                  </div>
+                  <p className="text-stone-600 leading-relaxed mb-4">{comment.text}</p>
+                  
+                  {/* Show delete button only if current user owns the comment */}
+                  {userInfo && comment.user._id === userInfo._id && (
+                    <div className="flex justify-end pt-2 border-t border-stone-200">
+                      <button
+                        onClick={() => handleDeleteComment(comment._id)}
+                        className="flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-105 font-medium text-sm"
+                        title="Delete comment"
+                      >
+                        <FaTrash className="text-sm" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <span className="font-semibold text-stone-800">User Name</span>
-              </div>
-              <div className="flex items-center gap-2 bg-amber-100 px-4 py-2 rounded-full border border-amber-200">
-                <FaStar className="text-amber-500" />
-                <span className="font-bold text-amber-700">4.5</span>
-              </div>
-            </div>
-            <p className="text-stone-600 leading-relaxed">
-              This recipe was amazing! Very easy to follow and delicious.
-            </p>
+              ))
+            ) : (
+              <Message variant="info">No comments yet. Be the first to comment!</Message>
+            )}
           </div>
         </div>
 
@@ -202,13 +259,18 @@ const Recipe = () => {
           </h3>
 
           <textarea
+            value={comment}
+            onChange={(e)=>setComment(e.target.value)}
             rows="4"
             placeholder="Write your comment..."
             className="w-full border-2 border-stone-200 rounded-2xl p-5 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition-all text-stone-700 placeholder:text-stone-400"
           ></textarea>
 
           <div className="flex items-center justify-between mt-6">
-            <button className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <button 
+            onClick={handleAddComment} 
+            disabled={addingComment}
+            className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-xl hover:scale-105 transition-all duration-300">
               Submit
             </button>
           </div>
