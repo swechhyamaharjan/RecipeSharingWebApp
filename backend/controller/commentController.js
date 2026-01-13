@@ -41,22 +41,28 @@ const getComments = async (req, res) => {
 const deleteComments = async (req, res) => {
   try {
     const commentId = req.params.id;
+
     const comment = await Comment.findById(commentId);
     if (!comment) {
       return res.status(404).send({ message: "Comment not found" });
     }
-    if (!comment.user) {
-      return res.status(400).json({ message: "Comment has no associated user" });
-    }
-
+    
+    // Check if the logged-in user is the owner
     if (comment.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized to delete this comment" });
+      return res.status(403).send({ message: "Not authorized to delete this comment" });
     }
     await comment.deleteOne();
-    res.status(200).json({ message: "Comment deleted successfully" });
+
+    // **Remove comment reference from the Recipe too
+    await Recipe.findByIdAndUpdate(comment.recipe, {
+      $pull: { comment: comment._id }
+    });
+
+    res.status(200).json({ message: "Comment deleted successfully", deletedCommentId: commentId });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }
+
 
 export { addComment, getComments, deleteComments };
