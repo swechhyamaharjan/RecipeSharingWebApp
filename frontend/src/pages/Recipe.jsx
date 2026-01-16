@@ -105,10 +105,13 @@ const Recipe = () => {
             </h1>
 
             {/* Rating */}
-            <Rating
+            <div className="mb-8 ">
+           <Rating 
               value={recipe.averageRating}
               text={recipe.numReviews}
             />
+            </div>
+           
 
             {/* Like & Bookmark */}
             <div className="flex items-center gap-4 mb-8">

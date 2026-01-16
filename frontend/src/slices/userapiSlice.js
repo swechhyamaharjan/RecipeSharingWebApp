@@ -22,8 +22,14 @@ const userApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       })
+    }),
+    userfavorite: builder.query({
+      query: ()=> ({
+        url: `${USER_URL}/favorites`,
+        method: "GET"
+      })
     })
    })
 })
 
-export const {useLoginMutation, useLogoutMutation, useSignupMutation} = userApiSlice;
+export const {useLoginMutation, useLogoutMutation, useSignupMutation, useUserfavoriteQuery} = userApiSlice;

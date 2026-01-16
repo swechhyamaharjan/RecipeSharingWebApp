@@ -188,7 +188,7 @@ const toggleFavorite = async (req, res) => {
   }
 };
 
-export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite, getMyRecipes };
+export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite, getMyRecipes};
 
 
 
