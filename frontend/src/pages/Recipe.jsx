@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useParams } from "react-router";
 import { useGetRecipeByIdQuery, useToggleFavoriteMutation, useToggleLikeMutation } from "../slices/recipeApiSlice";
-import { useGetCommentsQuery, useAddCommentMutation, useDeleteCommentMutation} from "../slices/commentApiSlice";
+import { useGetCommentsQuery, useAddCommentMutation, useDeleteCommentMutation } from "../slices/commentApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { FaHeart, FaBookmark, FaStar, FaTrash } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import Rating from "../components/Rating";
 
 const Recipe = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const Recipe = () => {
   const [comment, setComment] = useState("");
   const [toggleLike, { isLoading: liking }] = useToggleLikeMutation();
   const [toggleFav, { isLoading: bookmarking }] = useToggleFavoriteMutation();
+  const [rating, setRating] = useState(0);
 
   if (isLoading) return <Loader />;
   if (error) return <Message>{error.message || "Failed to load recipe"}</Message>;
@@ -53,18 +55,24 @@ const Recipe = () => {
   }
 
   const handleAddComment = async () => {
-    if (!comment.trim()) return; // ignore empty
+    if (!comment.trim() || rating === 0) {
+      toast.error("Please write a comment and rate as well");
+      return;
+     } 
+
     try {
-      const res = await addComment({id, text: comment}).unwrap();
+      const res = await addComment({ id, text: comment, rating }).unwrap();
       toast.success(res.message);
       setComment("");
+      setRating(0);
+
     } catch (error) {
       toast.error(error?.data?.message || error?.error)
     }
   }
 
   const handleDeleteComment = async (commentId) => {
-    if (window.confirm("Are you sure you want to delete this comment?")){
+    if (window.confirm("Are you sure you want to delete this comment?")) {
       try {
         const res = await deleteComment(commentId).unwrap();
         toast.success(res.message);
@@ -97,15 +105,10 @@ const Recipe = () => {
             </h1>
 
             {/* Rating */}
-            <div className="flex items-center gap-3 mb-8">
-              <div className="flex items-center gap-2 bg-amber-50 px-5 py-3 rounded-2xl border border-amber-200">
-                <FaStar className="text-amber-500 text-xl" />
-                <span className="text-stone-800 font-bold text-xl">
-                  {recipe.averageRating.toFixed(1)}
-                </span>
-                <span className="text-stone-500 text-sm">/ 5</span>
-              </div>
-            </div>
+            <Rating
+              value={recipe.averageRating}
+              text={recipe.numReviews}
+            />
 
             {/* Like & Bookmark */}
             <div className="flex items-center gap-4 mb-8">
@@ -226,11 +229,11 @@ const Recipe = () => {
                     </div>
                     <div className="flex items-center gap-2 bg-amber-100 px-4 py-2 rounded-full border border-amber-200">
                       <FaStar className="text-amber-500" />
-                      <span className="font-bold text-amber-700">4.5</span>
+                      <span className="font-bold text-amber-700">{comment.rating || 0}</span>
                     </div>
                   </div>
                   <p className="text-stone-600 leading-relaxed mb-4">{comment.text}</p>
-                  
+
                   {/* Show delete button only if current user owns the comment */}
                   {userInfo && comment.user._id === userInfo._id && (
                     <div className="flex justify-end pt-2 border-t border-stone-200">
@@ -260,20 +263,38 @@ const Recipe = () => {
 
           <textarea
             value={comment}
-            onChange={(e)=>setComment(e.target.value)}
+            onChange={(e) => setComment(e.target.value)}
             rows="4"
             placeholder="Write your comment..."
             className="w-full border-2 border-stone-200 rounded-2xl p-5 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition-all text-stone-700 placeholder:text-stone-400"
           ></textarea>
 
           <div className="flex items-center justify-between mt-6">
-            <button 
-            onClick={handleAddComment} 
-            disabled={addingComment}
-            className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <button
+              onClick={handleAddComment}
+              disabled={addingComment}
+              className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-xl hover:scale-105 transition-all duration-300">
               Submit
             </button>
+
+            {/* Rating Selector */}
+            <div className="flex items-center gap-3">
+              <span className="text-stone-600 font-medium">Your Rating:</span>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setRating(star)}
+                    className="text-2xl transition-all duration-200 hover:scale-110"
+                  >
+                    <FaStar className={star <= rating ? "text-amber-500" : "text-stone-300"} />
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
+
         </div>
 
       </div>

@@ -11,10 +11,10 @@ const commentApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Comment"]
     }),
     addComment: builder.mutation({
-      query: ({id, text})=>({
+      query: ({id, text, rating})=>({
         url: `${COMMENT_URL}/${id}`,
         method: "POST",
-        body: { text }
+        body: { text, rating }
       }),
       invalidatesTags: (result, error, {id}) => [
         {type: "Recipe", id},

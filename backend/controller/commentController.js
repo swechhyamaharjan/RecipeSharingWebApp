@@ -5,21 +5,32 @@ import User from "../model/user.js";
 const addComment = async (req, res) => {
   try {
     const recipeId = req.params.id;
-    const { text } = req.body;
+    const { text, rating } = req.body;
+
+      if (!text || !rating) {
+      return res.status(400).send({ error: "Text and rating are required" });
+    }
 
     const comment = await Comment.create({
       user: req.user._id,
       recipe: recipeId,
       text,
+      rating,
     })
-    await Recipe.findByIdAndUpdate(recipeId, {
-      $push: { comment: comment._id }
-    })
+
+    const recipe = await Recipe.findById(recipeId);
+
+    recipe.numReviews += 1;
+    recipe.averageRating = (recipe.averageRating * (recipe.numReviews - 1) + rating) / recipe.numReviews;
+
+    await recipe.save();
+
     const populatedComment = await Comment.findById(comment._id).populate(
       "user",
-      "fullname email -_id"
+      "fullname email"
     );
-    res.send({
+
+    res.status(201).send({
       message: "Comment added successfully",
       comment: populatedComment,
     });
@@ -47,7 +58,7 @@ const deleteComments = async (req, res) => {
     if (!comment) {
       return res.status(404).send({ message: "Comment not found" });
     }
-    
+
     // Check if the logged-in user is the owner
     if (comment.user.toString() !== req.user._id.toString()) {
       return res.status(403).send({ message: "Not authorized to delete this comment" });
