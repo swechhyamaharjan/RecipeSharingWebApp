@@ -27,7 +27,8 @@ const userApiSlice = apiSlice.injectEndpoints({
       query: ()=> ({
         url: `${USER_URL}/favorites`,
         method: "GET"
-      })
+      }),
+      providesTags: ["User"]
     })
    })
 })
