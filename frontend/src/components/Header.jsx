@@ -1,11 +1,12 @@
 import { NavLink } from "react-router";
-import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
+import { FaPlus, FaUserCircle, FaSearch, FaBars, FaTimes } from "react-icons/fa";
 import logo from "../assets/logo.jpg";
 import { useSelector, useDispatch } from "react-redux"
 import { removeCredentails } from "../slices/authSlice";
 import { useLogoutMutation } from "../slices/userapiSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { useState } from "react";
 
 
 const Header = () => {
@@ -13,12 +14,14 @@ const Header = () => {
   const [logout] = useLogoutMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const logoutHandler = async()=>{
     try {
       await logout().unwrap();
       dispatch(removeCredentails())
       navigate("/")
+      setMobileMenuOpen(false);
     } catch (error) {
       toast.error(error?.data?.error)
     }
@@ -29,12 +32,12 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between h-16">
         {/*Logo & Brand */}
         <NavLink to="/" className="flex items-center gap-2">
-          <img src={logo} alt="logo" className="h-12 w-12 object-contain" />
-          <span className="text-xl font-bold text-green-600">RecipeHub</span>
+          <img src={logo} alt="logo" className="h-10 w-10 sm:h-12 sm:w-12 object-contain" />
+          <span className="text-lg sm:text-xl font-bold text-green-600">RecipeHub</span>
         </NavLink>
 
-        {/* Center: Nav + Search */}
-        <div className="hidden md:flex items-center gap-6 flex-1 justify-center">
+        {/* Center: Nav + Search - Desktop Only */}
+        <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
           {/* Search */}
           <div className="relative">
             <input
@@ -66,22 +69,23 @@ const Header = () => {
         </div>
 
         {/* Right: Create + Profile */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <NavLink
             to="/create-recipe"
-            className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-1"
+            className="bg-green-500 text-white px-2 py-1 sm:px-3 sm:py-1 rounded-md hover:bg-green-600 flex items-center gap-1 text-sm sm:text-base"
           >
             <FaPlus />
-            <span>Create</span>
+            <span className="hidden sm:inline">Create</span>
           </NavLink>
+          
           {!userInfo ? (
             <NavLink to="/signin">
-              <button className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600">
+              <button className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm sm:text-base">
                 Signin
               </button>
             </NavLink>
           ) : (
-            <div className="relative group">
+            <div className="relative group hidden lg:block">
               <div className="flex items-center gap-2">
                 <FaUserCircle className="text-2xl text-gray-700 hover:text-gray-900 cursor-pointer" />
                 <span className="text-sm text-gray-700">
@@ -117,10 +121,96 @@ const Header = () => {
                 </button>
               </div>
             </div>
-          )
-          }
+          )}
+
+          {/* Mobile Menu Button */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden text-gray-700 text-2xl"
+          >
+            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-200">
+          {/* Search Bar Mobile */}
+          <div className="px-4 py-3">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search recipes..."
+                className="pl-10 pr-4 py-2 w-full rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
+          </div>
+
+          {/* Nav Links Mobile */}
+          <div className="px-4 py-2 space-y-1">
+            {[
+              { name: "Home", path: "/" },
+              { name: "Recipes", path: "/recipes" },
+              { name: "About", path: "/about" },
+              { name: "Contact", path: "/contact" },
+            ].map((link) => (
+              <NavLink
+                key={link.name}
+                to={link.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `block px-4 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-100 ${isActive ? "text-orange-600 bg-orange-50" : ""
+                  }`
+                }
+              >
+                {link.name}
+              </NavLink>
+            ))}
+          </div>
+
+          {/* User Menu Mobile */}
+          {userInfo && (
+            <div className="px-4 py-2 border-t border-gray-200">
+              <div className="flex items-center gap-2 px-4 py-2">
+                <FaUserCircle className="text-2xl text-gray-700" />
+                <span className="text-sm text-gray-700 font-medium">
+                  {userInfo.fullname}
+                </span>
+              </div>
+              
+              <div className="space-y-1 mt-2">
+                <NavLink
+                  to="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md" >
+                  Profile
+                </NavLink>
+
+                <NavLink
+                  to="/my-recipes"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md" >
+                  My Recipes
+                </NavLink>
+
+                <NavLink
+                  to="/bookmark"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                  Bookmarks
+                </NavLink>
+
+                <button onClick={logoutHandler}
+                  className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100 rounded-md">
+                  Logout
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </header>
   );
 };
