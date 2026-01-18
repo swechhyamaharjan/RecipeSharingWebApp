@@ -1,3 +1,4 @@
+import { email } from "zod";
 import User from "../model/user.js"
 import createToken from "../utils/generateToken.js";
 
@@ -68,6 +69,28 @@ const getUserFavorite = async (req, res) => {
   }
 }
 
+const updateProfile = async(req, res)=>{
+  const userId = req.user._id;
+  const user = await User.findById(userId);
+  if (!user) return res.send({error: "User not found"})
+   
+    user.fullname = req.body.fullname || user.fullname;
+    user.email = req.body.email || user.email;
 
-export { signup, login, logout, getUserFavorite};
+  if(req.body.password){
+    user.password = req.body.password;
+  }
+  const updatedUser = await user.save();
+   
+  res.send({
+    message: "Profile Updated",
+    user: {
+      fullname: updatedUser.fullname,
+      email: updatedUser.email
+    },
+  })
+}
+
+
+export { signup, login, logout, getUserFavorite, updateProfile };
 

@@ -15,6 +15,7 @@ import RegisterPage from './pages/RegisterPage.jsx'
 import PrivatePage from './pages/PrivatePage.jsx'
 import MyRecipes from './pages/MyRecipes.jsx'
 import Bookmark from './pages/Bookmark.jsx'
+import MyProfile from './pages/MyProfile.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='my-recipes' element={<MyRecipes/>}></Route>
         <Route path='edit-recipe/:id' element={<CreateRecipe/>}></Route>
         <Route path='bookmark' element={<Bookmark/>}></Route>
+        <Route path='/profile' element={<MyProfile/>}></Route>
         </Route>
       </Route>
     </Routes>

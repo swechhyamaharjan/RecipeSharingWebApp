@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 
 const Bookmark = () => {
   const { data: Favorites, isLoading, error } = useUserfavoriteQuery();
-  const [toggleFav, { isLoading: bookmarking }] = useToggleFavoriteMutation();
+  const [toggleFav] = useToggleFavoriteMutation();
   const { userInfo } = useSelector((state) => state.auth);
 
   if (isLoading) return <Loader />;
