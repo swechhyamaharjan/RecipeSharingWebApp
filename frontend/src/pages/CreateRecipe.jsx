@@ -84,7 +84,7 @@ const CreateRecipe = () => {
         await editRecipe({ id, data }).unwrap();
         toast.success("Recipe updated successfully");
       } else {
-        await addRecipe({ data }).unwrap();
+        await addRecipe(data).unwrap();
         toast.success("Recipe added successfully");
       }
       navigate("/my-recipes")

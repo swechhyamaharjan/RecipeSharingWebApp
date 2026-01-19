@@ -1,10 +1,23 @@
 import { Link } from "react-router";
-import { useGetMyRecipesQuery } from "../slices/recipeApiSlice";
+import { useGetMyRecipesQuery, useDeleteRecipeMutation } from "../slices/recipeApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { toast } from "react-toastify";
 
 const MyRecipes = () => {
   const {data: recipes, isLoading, error} = useGetMyRecipesQuery();
+  const [deleteRecipe] = useDeleteRecipeMutation();
+
+  const deleteHandler = async(id) => {
+    if(window.confirm("Are you sure you want to delete this recipe?")){
+    try {
+      const res = await deleteRecipe(id).unwrap();
+      toast.success(res.message);
+    } catch (error) {
+      toast.error(error?.data?.error || "Failed to delete your recipe!!")
+    }
+  }
+  }
 
   if(isLoading) return <Loader />
   if(error) return <Message>{error.message || "Failed to load your recipes"}</Message>
@@ -64,10 +77,16 @@ const MyRecipes = () => {
 
                     <Link
                       to={`/edit-recipe/${recipe._id}`}
-                      className="text-sm text-gray-600 font-medium hover:text-gray-800 hover:underline transition-colors"
+                      className="text-sm text-yellow-600 font-medium hover:text-yellow-800 hover:underline transition-colors"
                     >
                       Edit
                     </Link>
+                    <button type="submit" 
+                      onClick={() => deleteHandler(recipe._id)}
+                      className="text-sm text-red-600 font-medium hover:text-red-700 hover:underline transition-colors"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               </div>
