@@ -19,7 +19,7 @@ const sendContact = async(req, res)=>{
 
     const mailOptions = {
       from: email,
-      to: process.env.USER_EMAIL, // your email
+      to: process.env.USER_EMAIL, 
       subject: `New Contact Message from ${name}`,
       html: `
         <h1>RecipeHub<h1>

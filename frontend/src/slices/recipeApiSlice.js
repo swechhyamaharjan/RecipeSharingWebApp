@@ -4,8 +4,8 @@ import { RECIPE_URL } from "../constants"
 const recipeApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder)=>({
       getRecipes: builder.query({
-        query: ()=>({
-          url: RECIPE_URL,    
+        query: (keyword = "")=>({
+          url: `${RECIPE_URL}?keyword=${encodeURIComponent(keyword)}`,    
         }),
         keepUnusedDataFor: 5,
         providesTags: ['Recipe']

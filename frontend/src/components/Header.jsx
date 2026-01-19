@@ -6,7 +6,7 @@ import { removeCredentails } from "../slices/authSlice";
 import { useLogoutMutation } from "../slices/userapiSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 const Header = () => {
@@ -15,6 +15,30 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [keyword, setKeyword] = useState("");
+
+  // Debounced live search effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (keyword.trim()) {
+        navigate(`/recipes?keyword=${keyword}`);
+      } else if (keyword === "" && window.location.pathname === "/recipes") {
+        navigate("/recipes");
+      }
+    }, 500); // 500ms delay for debouncing
+     return () => clearTimeout(timer);
+  }, [keyword, navigate]);
+
+  const searchHandler = async(e)=>{
+    e.preventDefault();
+    if(keyword.trim()){
+      navigate(`/recipes?keyword=${keyword}`);
+      setMobileMenuOpen(false);
+    }else{
+      navigate("/recipes");
+    }
+  }
 
   const logoutHandler = async()=>{
     try {
@@ -39,14 +63,16 @@ const Header = () => {
         {/* Center: Nav + Search - Desktop Only */}
         <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
           {/* Search */}
-          <div className="relative">
+          <form className="relative" onSubmit={searchHandler}>
             <input
               type="text"
               placeholder="Search recipes..."
+              value={keyword}
+              onChange={(e)=>setKeyword(e.target.value)}
               className="pl-10 pr-4 py-2 w-64 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          </div>
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" onClick={searchHandler}/>
+          </form>
 
           {/* Nav Links */}
           {[
@@ -138,14 +164,16 @@ const Header = () => {
         <div className="lg:hidden bg-white border-t border-gray-200">
           {/* Search Bar Mobile */}
           <div className="px-4 py-3">
-            <div className="relative">
+            <form onSubmit={searchHandler} className="relative">
               <input
                 type="text"
                 placeholder="Search recipes..."
+                value={keyword}
+                onChange={(e)=>setKeyword(e.target.value)}
                 className="pl-10 pr-4 py-2 w-full rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" onClick={searchHandler}/>
+            </form >
           </div>
 
           {/* Nav Links Mobile */}

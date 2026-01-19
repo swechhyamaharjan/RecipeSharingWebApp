@@ -1,12 +1,25 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useGetRecipesQuery } from "../slices/recipeApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { Heart, Star, ChefHat } from "lucide-react";
 
 const RecipePage = () => {
-  const { data: recipes, isLoading, error } = useGetRecipesQuery();
+   const location = useLocation();
+  
+  const params = new URLSearchParams(location.search); //?keyword=faluda = query string
+
+  const urlKeyword = params.get("keyword") || "";
+  
+  const [keyword, setKeyword] = useState(urlKeyword);
+
+  // Sync local state with URL changes
+  useEffect(() => {
+    setKeyword(urlKeyword);
+  }, [urlKeyword]);
+
+  const { data: recipes, isLoading, error } = useGetRecipesQuery(keyword);
 
   if (isLoading) return <Loader />;
   if (error) return <Message variant="danger">{error.message || "Something went wrong!"}</Message>;
@@ -20,7 +33,13 @@ const RecipePage = () => {
         <ChefHat className="w-8 h-8 text-green-600" />
         <h1 className="text-3xl font-bold text-gray-900">All Recipes</h1>
       </div>
-      <p className="text-gray-600 mt-2">Discover delicious recipes crafted with love</p>
+      <p className="text-gray-600 mt-2">
+            {keyword
+              ? recipes.length
+                ? `Found ${recipes.length} recipes`
+                : "No recipes found"
+              : "Discover delicious recipes crafted with love"}
+          </p>
     </div>
   </div>
 

@@ -37,7 +37,9 @@ const addRecipe = async (req, res) => {
 };
 
 const getAllRecipes = async (req, res) => {
-  const recipes = await Recipe.find()
+  const { keyword } = req.query;
+  const filter = keyword ? { title: {$regex: keyword, $options: "i"}} : {};
+  const recipes = await Recipe.find(filter)
     .populate('user', "fullname email -_id")
     .populate("category", "name description -_id");
   res.send(recipes);
