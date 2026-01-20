@@ -16,6 +16,12 @@ import PrivatePage from './pages/PrivatePage.jsx'
 import MyRecipes from './pages/MyRecipes.jsx'
 import Bookmark from './pages/Bookmark.jsx'
 import MyProfile from './pages/MyProfile.jsx'
+import AdminRoute from './components/AdminRoute.jsx'
+import AdminHome from './pages/Admin/AdminHome.jsx'
+import AdminLayout from './Layouts/AdminLayout.jsx'
+import AdminRecipe from './pages/Admin/AdminRecipe.jsx'
+import AdminUser from './pages/Admin/AdminUser.jsx'
+import AdminCategory from './pages/Admin/AdminCategory.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -30,13 +36,23 @@ createRoot(document.getElementById('root')).render(
         <Route path='recipe/:id' element={<Recipe/>}></Route>
         <Route path='signin' element={<Signin/>}></Route>
         <Route path='register' element={<RegisterPage />}></Route>
-        <Route path='' element={<PrivatePage />}>
+
+        <Route path='' element={<PrivatePage />}>  {/*protected route */}
         <Route path='create-recipe' element={<CreateRecipe/>}></Route>
         <Route path='my-recipes' element={<MyRecipes/>}></Route>
         <Route path='edit-recipe/:id' element={<CreateRecipe/>}></Route>
         <Route path='bookmark' element={<Bookmark/>}></Route>
         <Route path='/profile' element={<MyProfile/>}></Route>
         </Route>
+      </Route>
+      <Route path='/admin' element={<AdminRoute />}>
+        <Route element={<AdminLayout />}>
+        <Route path='' element={<AdminHome />}></Route>
+        <Route path='recipes' element={<AdminRecipe />}></Route>
+        <Route path='users' element={<AdminUser />}></Route>
+        <Route path='category' element={<AdminCategory />}></Route>
+        </Route>
+
       </Route>
     </Routes>
   </BrowserRouter>

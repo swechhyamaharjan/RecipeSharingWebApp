@@ -14,18 +14,21 @@ const Signin = () => {
   const [login, {isLoading}] = useLoginMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userInfo } = useSelector((state)=>state.auth);
 
   const submitHandler = async(e)=>{
    e.preventDefault();
    try {
      const res = await login({email, password}).unwrap();
      dispatch(setCredentials(res.user));
-     navigate("/")
+     if(res.user.isAdmin){
+      navigate("/admin")
+     }else{
+      navigate("/")
+     }
    } catch (error) {
     toast.error(error?.data?.error || error?.error)
    }
-  
-  
   }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
