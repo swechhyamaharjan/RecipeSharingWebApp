@@ -1,9 +1,7 @@
 import { NavLink } from "react-router";
 import { FaTachometerAlt, FaUsers, FaUtensils, FaFolderOpen, FaSignOutAlt, FaCog } from "react-icons/fa";
-import { useSelector } from "react-redux";
 
 const AdminSidebar = () => {
-  const { userInfo } = useSelector((state) => state.auth);
 
   const navItems = [
     { to: "/admin", label: "Dashboard", icon: FaTachometerAlt, end: true },
@@ -17,9 +15,6 @@ const AdminSidebar = () => {
       <div className="mb-8">
         <h2 className="text-2xl font-bold tracking-tight">Admin Panel</h2>
         <div className="h-1 w-12 bg-emerald-500 mt-3 rounded-full"></div>
-         <p className="text-md text-zinc-400 mt-8">
-          Welcome, <span className="text-emerald-400 font-medium">{userInfo?.fullname}</span>
-        </p>
       </div>
 
       <nav className="space-y-1.5 flex-1">

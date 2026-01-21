@@ -1,9 +1,120 @@
-import React from 'react'
+import { FaUsers, FaUtensils,FaTags,FaHeart} from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const AdminHome = () => {
+  const {userInfo} = useSelector((state)=>state.auth)
   return (
-    <div>AdminHome</div>
-  )
-}
+    <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Page Title */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Admin Dashboard
+        </h1>
+       <p className="text-md text-zinc-400 mt-8">
+          Welcome, <span className="text-emerald-400 font-medium">{userInfo?.fullname}</span>
+        </p>
+      </div>
 
-export default AdminHome
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        {/* Users */}
+        <div className="bg-white rounded-xl shadow-sm p-5 border hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-500 text-sm">Total Users</p>
+              <h2 className="text-2xl font-bold text-gray-800">1,245</h2>
+            </div>
+            <div className="bg-green-100 text-green-600 p-3 rounded-full">
+              <FaUsers size={22} />
+            </div>
+          </div>
+        </div>
+
+        {/* Recipes */}
+        <div className="bg-white rounded-xl shadow-sm p-5 border hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-500 text-sm">Total Recipes</p>
+              <h2 className="text-2xl font-bold text-gray-800">328</h2>
+            </div>
+            <div className="bg-orange-100 text-orange-600 p-3 rounded-full">
+              <FaUtensils size={22} />
+            </div>
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div className="bg-white rounded-xl shadow-sm p-5 border hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-500 text-sm">Categories</p>
+              <h2 className="text-2xl font-bold text-gray-800">18</h2>
+            </div>
+            <div className="bg-blue-100 text-blue-600 p-3 rounded-full">
+              <FaTags size={22} />
+            </div>
+          </div>
+        </div>
+
+        {/* Favorites */}
+        <div className="bg-white rounded-xl shadow-sm p-5 border hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-500 text-sm">Favorites</p>
+              <h2 className="text-2xl font-bold text-gray-800">2,931</h2>
+            </div>
+            <div className="bg-pink-100 text-pink-600 p-3 rounded-full">
+              <FaHeart size={22} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Section */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* Recent Users */}
+        <div className="bg-white rounded-xl shadow-sm border p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Recent Users
+          </h3>
+          <ul className="space-y-3">
+            {["Sanil Maharjan", "Aashish Thapa", "Sita Rai"].map((user, index) => (
+              <li
+                key={index}
+                className="flex items-center justify-between text-sm text-gray-600"
+              >
+                <span>{user}</span>
+                <span className="text-xs text-gray-400">Just now</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Recent Recipes */}
+        <div className="bg-white rounded-xl shadow-sm border p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Recently Added Recipes
+          </h3>
+          <ul className="space-y-3">
+            {["Chicken Momo", "Veg Chowmein", "Newari Khaja Set"].map(
+              (recipe, index) => (
+                <li
+                  key={index}
+                  className="flex items-center justify-between text-sm text-gray-600"
+                >
+                  <span>{recipe}</span>
+                  <span className="text-xs text-gray-400">Today</span>
+                </li>
+              )
+            )}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default AdminHome;
