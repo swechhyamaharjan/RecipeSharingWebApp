@@ -30,15 +30,29 @@ const userApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["User"]
     }),
+    allfavorites: builder.query({
+      query: ()=> ({
+        url: `${USER_URL}/allFavorites`,
+        method: "GET",
+      }),
+      providesTags: ["User"]
+    }),
     updateProfile: builder.mutation({
       query: (data)=>({
         url: `${USER_URL}/updateProfile`,
         method: "PUT",
         body: data,
       })
+    }),
+    getAllUsers: builder.query({
+      query: ()=>({
+        url: `${USER_URL}`,
+        method: "GET",
+      }),
+      providesTags: ["User"]
     })
    })
 })
 
 
-export const {useLoginMutation, useLogoutMutation, useSignupMutation, useUserfavoriteQuery, useUpdateProfileMutation} = userApiSlice;
+export const {useLoginMutation, useLogoutMutation, useSignupMutation, useUserfavoriteQuery, useUpdateProfileMutation, useGetAllUsersQuery, useAllfavoritesQuery} = userApiSlice;

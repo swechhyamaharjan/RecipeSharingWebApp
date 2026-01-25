@@ -69,6 +69,23 @@ const getUserFavorite = async (req, res) => {
   }
 }
 
+const getAllFavorites = async (req, res) => {
+  try {
+    const users = await User.find()
+      .populate({
+        path: "favorites",
+        populate: { path: "category", select: "name" },
+      });
+    //all favorites into a single array
+    const allFavorites = users.flatMap(user => user.favorites);
+
+    res.status(200).send(allFavorites);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to fetch all favorites" });
+  }
+};
+
+
 const updateProfile = async(req, res)=>{
   const userId = req.user._id;
   const user = await User.findById(userId);
@@ -91,6 +108,15 @@ const updateProfile = async(req, res)=>{
   })
 }
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send({ message: "Failed to fetch users" });
+  }
+};
 
-export { signup, login, logout, getUserFavorite, updateProfile };
+
+export { signup, login, logout, getUserFavorite, updateProfile, getAllUsers, getAllFavorites};
 
