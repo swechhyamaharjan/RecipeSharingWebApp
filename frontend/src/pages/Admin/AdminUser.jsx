@@ -54,7 +54,6 @@ const AdminUser = () => {
 
   return (
     <div className='min-h-screen p-6 bg-gray-50'>
-      <div className='max-w-7xl mx-auto'>
         <h1 className='text-3xl font-bold mb-8 text-gray-800'>All Users</h1>
 
         {/* Search and Sort Controls */}
@@ -129,7 +128,7 @@ const AdminUser = () => {
               <thead className='bg-gray-50 border-b border-gray-200'>
                 <tr>
                   <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
-                    #
+                    S.No
                   </th>
                   <th className='px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'>
                     Name
@@ -176,7 +175,6 @@ const AdminUser = () => {
             </table>
           </div>
         </div>
-      </div>
     </div>
   )
 }
