@@ -3,8 +3,10 @@ import { useGetRecipesQuery } from '../../slices/recipeApiSlice'
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { FaCheck, FaTimes, FaUser, FaClock, FaEye } from "react-icons/fa";
+import { useNavigate } from 'react-router';
 
 const AdminRecipe = () => {
+  const navigate = useNavigate();
   const { data: recipes = [], isLoading, error } = useGetRecipesQuery();
   const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
 
@@ -85,7 +87,8 @@ const AdminRecipe = () => {
 
                 {/* View Button Overlay */}
                 <div className='absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
-                  <button className='bg-white text-gray-900 px-6 py-2.5 rounded-full font-medium flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300'>
+                  <button onClick={() => navigate(`recipe/${recipe._id}`)}
+                   className='bg-white text-gray-900 px-6 py-2.5 rounded-full font-medium flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300'>
                     <FaEye />
                     View Details
                   </button>
@@ -103,7 +106,7 @@ const AdminRecipe = () => {
                     ? recipe.description.substring(0, 80) + '...' 
                     : recipe.description}
                 </p>
-                
+
                 {/* Meta Info */}
                 <div className='flex items-center gap-4 mb-5 pb-5 border-b border-gray-100'>
                   <div className='flex items-center gap-2 text-sm text-gray-600'>

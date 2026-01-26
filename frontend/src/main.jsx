@@ -22,6 +22,7 @@ import AdminLayout from './Layouts/AdminLayout.jsx'
 import AdminRecipe from './pages/Admin/AdminRecipe.jsx'
 import AdminUser from './pages/Admin/AdminUser.jsx'
 import AdminCategory from './pages/Admin/AdminCategory.jsx'
+import AdminRecipeID from './pages/Admin/AdminRecipeID.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -49,6 +50,7 @@ createRoot(document.getElementById('root')).render(
         <Route element={<AdminLayout />}>
         <Route path='' element={<AdminHome />}></Route>
         <Route path='recipes' element={<AdminRecipe />}></Route>
+        <Route path='recipes/recipe/:id' element={<AdminRecipeID />}></Route>
         <Route path='users' element={<AdminUser />}></Route>
         <Route path='category' element={<AdminCategory />}></Route>
         </Route>
