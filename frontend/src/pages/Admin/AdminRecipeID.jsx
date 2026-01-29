@@ -1,13 +1,28 @@
 import React from 'react'
-import { useParams } from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 import { useGetRecipeByIdQuery } from '../../slices/recipeApiSlice'
+import { useUpdateRecipeStatusMutation } from '../../slices/recipeApiSlice';
 import Loader from '../../components/Loader'
 import Message from '../../components/Message'
-import { FaCheck, FaTimes, FaUser, FaClock, FaUtensils, FaListOl } from 'react-icons/fa'
+import { FaCheck, FaTimes, FaUser, FaClock, FaUtensils, FaListOl, FaAngleLeft } from 'react-icons/fa'
+import { toast } from 'react-toastify';
 
 const AdminRecipeID = () => {
   const { id } = useParams()
   const { data: recipe = [], isLoading, error } = useGetRecipeByIdQuery(id)
+  const [updateRecipeStatus] = useUpdateRecipeStatusMutation();
+  const navigate = useNavigate();
+
+  const statusHandler = async(id, status) => {
+    try{
+    await updateRecipeStatus({id, status}).unwrap();
+    toast.success(`Recipe ${status} successfully!!!`)
+    }
+    catch(error){
+      toast.error(error?.data?.error || "Action Failed!!")
+    }
+
+  }
 
   if (isLoading) return <Loader />
   if (error) return <Message>{error.message || 'Failed to load recipe'}</Message>
@@ -16,7 +31,12 @@ const AdminRecipeID = () => {
     <div className='min-h-screen bg-gray-50 p-6'>
       <div className='max-w-6xl mx-auto'>
         {/* Header */}
-        <h1 className='text-3xl font-bold text-gray-900 mb-8'>Recipe Details</h1>
+        <div className='flex items-center gap-4 mb-8'>
+        <FaAngleLeft className='text-2xl cursor-pointer border-2 rounded-md'
+        onClick={()=>navigate("/admin/recipes")}
+        />
+        <h1 className='text-3xl font-bold text-gray-900'>Recipe Details</h1>
+        </div>
 
         {/* Main Content Card */}
         <div className='bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6'>
@@ -115,14 +135,18 @@ const AdminRecipeID = () => {
         {/* Action Buttons */}
         <div className='flex gap-4'>
           <button
-            className='flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-sm'
+            disabled={recipe.status === 'approved'}
+            onClick={()=>{statusHandler(recipe._id, "approved")}}
+            className='flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm'
           >
             <FaCheck />
             Approve Recipe
           </button>
 
           <button
-            className='flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition shadow-sm'
+            disabled={recipe.status === 'rejected'}
+            onClick={()=>{statusHandler(recipe._id, "rejected")}}
+            className='flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm'
           >
             <FaTimes />
             Reject Recipe

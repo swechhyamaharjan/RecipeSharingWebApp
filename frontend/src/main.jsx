@@ -54,7 +54,6 @@ createRoot(document.getElementById('root')).render(
         <Route path='users' element={<AdminUser />}></Route>
         <Route path='category' element={<AdminCategory />}></Route>
         </Route>
-
       </Route>
     </Routes>
   </BrowserRouter>

@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import { useGetRecipesQuery } from '../../slices/recipeApiSlice'
+import { useUpdateRecipeStatusMutation } from '../../slices/recipeApiSlice';
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { FaCheck, FaTimes, FaUser, FaClock, FaEye } from "react-icons/fa";
 import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 
 const AdminRecipe = () => {
   const navigate = useNavigate();
   const { data: recipes = [], isLoading, error } = useGetRecipesQuery();
+  const [updateRecipeStatus] = useUpdateRecipeStatusMutation();
   const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
 
   const filteredRecipes = recipes.filter(recipe => {
@@ -21,6 +24,15 @@ const AdminRecipe = () => {
     approved: recipes.filter(r => r.status === 'approved').length,
     rejected: recipes.filter(r => r.status === 'rejected').length,
   };
+
+  const statusHandler = async(id, status) => {
+    try {
+      await updateRecipeStatus({id, status}).unwrap();
+      toast.success(`Recipe ${status} successfully!!!`)
+    } catch (error) {
+      toast.error(error?.data?.error|| "Action failed!!")
+    }
+  }
 
   if (isLoading) return <Loader />
   if (error) return <Message>{error.message || "Failed to load recipes"}</Message>
@@ -126,6 +138,7 @@ const AdminRecipe = () => {
                 <div className='flex gap-3'>
                   <button
                     disabled={recipe.status === 'approved'}
+                    onClick={()=>{statusHandler(recipe._id, "approved")}}
                     className='flex-1 flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all font-medium shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm'
                   >
                     <FaCheck className='text-sm' />
@@ -134,6 +147,7 @@ const AdminRecipe = () => {
 
                   <button
                     disabled={recipe.status === 'rejected'}
+                    onClick={()=>{statusHandler(recipe._id, "rejected")}}
                     className='flex-1 flex items-center justify-center gap-2 bg-red-600 text-white py-3 rounded-xl hover:from-red-600 hover:to-red-700 transition-all font-medium shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm'
                   >
                     <FaTimes className='text-sm' />
