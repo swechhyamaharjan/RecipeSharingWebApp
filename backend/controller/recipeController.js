@@ -114,6 +114,21 @@ const deleteRecipe = async (req, res) => {
   }
 }
 
+const updateRecipeStatus = async(req, res) => {
+  try {
+    const  { status } = req.body;
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe){
+      return res.status(404).send({error: "Recipe not found!!"})
+    }
+    recipe.status = status;
+    await recipe.save();
+    res.send({message: `Recipe ${status} successfully!!`})
+  } catch (error) {
+    res.status(500).send({error: error.message});
+  }
+}
+
 const toggleLike = async (req, res) => {
   try {
     const recipeId = req.params.id;
@@ -190,7 +205,7 @@ const toggleFavorite = async (req, res) => {
   }
 };
 
-export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite, getMyRecipes};
+export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite, getMyRecipes, updateRecipeStatus};
 
 
 
