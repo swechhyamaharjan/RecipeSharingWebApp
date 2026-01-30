@@ -10,6 +10,14 @@ const recipeApiSlice = apiSlice.injectEndpoints({
         keepUnusedDataFor: 5,
         providesTags: ['Recipe']
       }),
+      getAllRecipesAdmin: builder.query({
+        query: () => ({
+          url: `${RECIPE_URL}/admin`,
+          method: "GET"
+        }),
+         keepUnusedDataFor: 5,
+        providesTags: ['Recipe']
+      }),
       getRecipeById: builder.query({
         query: (id)=>({
           url: `${RECIPE_URL}/${id}`
@@ -72,4 +80,4 @@ const recipeApiSlice = apiSlice.injectEndpoints({
   })
 })
 
-export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation, useGetMyRecipesQuery, useEditRecipeMutation, useToggleLikeMutation, useToggleFavoriteMutation, useDeleteRecipeMutation, useUpdateRecipeStatusMutation} = recipeApiSlice;
+export const {useGetRecipesQuery, useGetRecipeByIdQuery, useAddRecipeMutation, useGetMyRecipesQuery, useEditRecipeMutation, useToggleLikeMutation, useToggleFavoriteMutation, useDeleteRecipeMutation, useUpdateRecipeStatusMutation, useGetAllRecipesAdminQuery} = recipeApiSlice;

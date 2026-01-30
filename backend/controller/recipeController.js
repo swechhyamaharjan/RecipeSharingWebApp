@@ -26,6 +26,7 @@ const addRecipe = async (req, res) => {
       instruction,
       image: req.file?.path || "",
       category,
+      status: "pending"
     });
 
     await User.findByIdAndUpdate(req.user._id, { $push: { recipes: recipe._id } });
@@ -38,12 +39,25 @@ const addRecipe = async (req, res) => {
 
 const getAllRecipes = async (req, res) => {
   const { keyword } = req.query;
-  const filter = keyword ? { title: {$regex: keyword, $options: "i"}} : {};
+  const filter = {
+    status: "approved", 
+    ...(keyword && {
+      title: { $regex: keyword, $options: "i" }
+    })
+  };
   const recipes = await Recipe.find(filter)
     .populate('user', "fullname email -_id")
     .populate("category", "name description -_id");
   res.send(recipes);
 }
+
+const getAllRecipesAdmin = async (req, res) => {
+  const recipes = await Recipe.find({})
+    .populate("user", "fullname email")
+    .populate("category", "name");
+
+  res.send(recipes);
+};
 
 const getRecipeById = async (req, res) => {
   const recipeId = req.params.id;
@@ -205,7 +219,7 @@ const toggleFavorite = async (req, res) => {
   }
 };
 
-export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite, getMyRecipes, updateRecipeStatus};
+export { addRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, toggleLike, toggleFavorite, getMyRecipes, updateRecipeStatus, getAllRecipesAdmin};
 
 
 

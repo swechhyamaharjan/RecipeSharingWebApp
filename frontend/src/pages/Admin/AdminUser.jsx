@@ -67,7 +67,7 @@ const AdminUser = () => {
                 placeholder='Search by name or email...'
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className='w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none'
+                className='w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none'
               />
             </div>
 
@@ -77,7 +77,7 @@ const AdminUser = () => {
                 onClick={() => toggleSort('name')}
                 className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 ${
                   sortBy === 'name' 
-                    ? 'bg-blue-500 text-white border-blue-500' 
+                    ? 'bg-green-500 text-white border-green-500' 
                     : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                 }`}
               >
@@ -90,7 +90,7 @@ const AdminUser = () => {
                 onClick={() => toggleSort('email')}
                 className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 ${
                   sortBy === 'email' 
-                    ? 'bg-blue-500 text-white border-blue-500' 
+                    ? 'bg-green-500 text-white border-green-500' 
                     : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                 }`}
               >
@@ -103,7 +103,7 @@ const AdminUser = () => {
                 onClick={() => toggleSort('date')}
                 className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 ${
                   sortBy === 'date' 
-                    ? 'bg-blue-500 text-white border-blue-500' 
+                    ? 'bg-blue-500 text-white border-green-500' 
                     : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                 }`}
               >

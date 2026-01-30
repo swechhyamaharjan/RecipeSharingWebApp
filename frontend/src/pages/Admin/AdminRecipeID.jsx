@@ -78,7 +78,7 @@ const AdminRecipeID = () => {
               {/* Meta Info */}
               <div className='flex flex-wrap gap-6 mt-6 pt-6 border-t border-gray-200'>
                 <div className='flex items-center gap-2 text-gray-600'>
-                  <FaUser className='text-gray-400' />
+                  <FaUser className='text-green-500'  />
                   <span className='font-medium'>{recipe.user?.fullname || 'Unknown User'}</span>
                 </div>
 
@@ -95,7 +95,7 @@ const AdminRecipeID = () => {
             {/* Ingredients */}
             <div>
               <div className='flex items-center gap-2 mb-4'>
-                <FaUtensils className='text-blue-600' />
+                <FaUtensils className='text-orange-600' />
                 <h3 className='text-lg font-bold text-gray-900'>
                   Ingredients
                 </h3>
@@ -103,7 +103,7 @@ const AdminRecipeID = () => {
               <ul className='space-y-2'>
                 {recipe.ingredients?.map((item, index) => (
                   <li key={index} className='flex items-start gap-2 text-gray-700'>
-                    <span className='text-blue-600 mt-1.5'>•</span>
+                    <span className='text-orange-600 '>•</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -113,7 +113,7 @@ const AdminRecipeID = () => {
             {/* Instructions */}
             <div>
               <div className='flex items-center gap-2 mb-4'>
-                <FaListOl className='text-blue-600' />
+                <FaListOl className='text-green-600' />
                 <h3 className='text-lg font-bold text-gray-900'>
                   Instructions
                 </h3>
@@ -121,7 +121,7 @@ const AdminRecipeID = () => {
               <ol className='space-y-3'>
                 {recipe.instruction?.map((item, index) => (
                   <li key={index} className='flex gap-3 text-gray-700'>
-                    <span className='flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold'>
+                    <span className='flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-semibold'>
                       {index + 1}
                     </span>
                     <span className='pt-0.5'>{item}</span>

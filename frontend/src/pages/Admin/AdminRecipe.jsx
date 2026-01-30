@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useGetRecipesQuery } from '../../slices/recipeApiSlice'
+import { useGetAllRecipesAdminQuery } from '../../slices/recipeApiSlice'
 import { useUpdateRecipeStatusMutation } from '../../slices/recipeApiSlice';
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 
 const AdminRecipe = () => {
   const navigate = useNavigate();
-  const { data: recipes = [], isLoading, error } = useGetRecipesQuery();
+  const { data: recipes = [], isLoading, error } = useGetAllRecipesAdminQuery();
   const [updateRecipeStatus] = useUpdateRecipeStatusMutation();
   const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
 
