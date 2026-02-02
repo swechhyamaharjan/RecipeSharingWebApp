@@ -1,9 +1,10 @@
 import { NavLink } from "react-router";
-import { FaPlus, FaUserCircle, FaSearch, FaBars, FaTimes } from "react-icons/fa";
+import { FaPlus, FaUserCircle, FaSearch, FaBars, FaTimes, FaBell } from "react-icons/fa";
 import logo from "../assets/logo.jpg";
 import { useSelector, useDispatch } from "react-redux"
 import { removeCredentails } from "../slices/authSlice";
 import { useLogoutMutation } from "../slices/userapiSlice";
+import { useGetMyNotificationQuery } from "../slices/notificationApiSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
@@ -12,11 +13,14 @@ import { useState, useEffect } from "react";
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [logout] = useLogoutMutation();
+  const {data: notifications = []} = useGetMyNotificationQuery();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [keyword, setKeyword] = useState("");
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   // Debounced live search effect
   useEffect(() => {
@@ -96,6 +100,18 @@ const Header = () => {
 
         {/* Right: Create + Profile */}
         <div className="flex items-center gap-3 sm:gap-4">
+          <NavLink
+            to="/notification"
+            className="relative text-gray-700 hover:text-orange-600 text-xl sm:text-2xl"
+          >
+            <FaBell />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </NavLink>
+
           <NavLink
             to="/create-recipe"
             className="bg-green-500 text-white px-2 py-1 sm:px-3 sm:py-1 rounded-md hover:bg-green-600 flex items-center gap-1 text-sm sm:text-base"
