@@ -23,6 +23,7 @@ import AdminRecipe from './pages/Admin/AdminRecipe.jsx'
 import AdminUser from './pages/Admin/AdminUser.jsx'
 import AdminCategory from './pages/Admin/AdminCategory.jsx'
 import AdminRecipeID from './pages/Admin/AdminRecipeID.jsx'
+import Notification from './pages/Notification.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -40,6 +41,7 @@ createRoot(document.getElementById('root')).render(
 
         <Route path='' element={<PrivatePage />}>  {/*protected route */}
         <Route path='create-recipe' element={<CreateRecipe/>}></Route>
+        <Route path='notification' element={<Notification/>}></Route>
         <Route path='my-recipes' element={<MyRecipes/>}></Route>
         <Route path='edit-recipe/:id' element={<CreateRecipe/>}></Route>
         <Route path='bookmark' element={<Bookmark/>}></Route>
