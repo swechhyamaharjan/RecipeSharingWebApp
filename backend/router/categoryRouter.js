@@ -1,5 +1,5 @@
 import express from "express";
-import { addCatergory, deleteCategory, getAllCategory, updateCategory } from "../controller/categoryController.js";
+import { addCategory, deleteCategory, getAllCategory, updateCategory } from "../controller/categoryController.js";
 import checkAdmin from "../middlewares/checkAdmin.js";
 import checkAuth from "../middlewares/checkAuth.js";
 import validationHandler from "../middlewares/validationHandler.js";
@@ -8,7 +8,7 @@ import { upload } from "./uploadRouter.js";
 
 const router = express.Router();
 
-router.post("/", checkAuth, checkAdmin, upload.single("image"), validationHandler(categoryAddSchema), addCatergory);
+router.post("/", checkAuth, checkAdmin, upload.single("image"), validationHandler(categoryAddSchema), addCategory);
 router.get("/", getAllCategory);
 router.put("/:id", checkAuth, checkAdmin, updateCategory);
 router.delete("/:id",checkAuth, checkAdmin, deleteCategory);

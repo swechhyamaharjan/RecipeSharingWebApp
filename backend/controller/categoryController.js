@@ -1,22 +1,28 @@
 import Category from "../model/category.js";
 
-const addCatergory = async (req, res) => {
+const addCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
-    const existCategory = await Category.findOne({ name });
+
+    const existCategory = await Category.findOne({
+      name: { $regex: `^${name}$`, $options: "i" }
+    });
+
     if (existCategory) {
-      return res.status(400).send({ message: "Category name already exists!!" })
+      return res.status(400).json({ message: "Category name already exists!" });
     }
     const category = await Category.create({
       name,
       description,
       image: req.file?.path || "",
-    })
-    res.send(category);
+    });
+
+    res.status(201).send(category);
   } catch (error) {
-    res.status(500).send({ error: "Server Errror", message: error.message });
+    res.status(500).send({error: error.message});
   }
-}
+};
+
 
 const getAllCategory = async (req, res) => {
   try {
@@ -60,4 +66,4 @@ const deleteCategory = async (req, res) => {
   }
 
 }
-export { addCatergory, getAllCategory, updateCategory, deleteCategory };
+export { addCategory, getAllCategory, updateCategory, deleteCategory };
