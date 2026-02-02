@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const mongodbURL = "mongodb://localhost:27017/RecipeSharing"
+const mongodbURL = process.env.MONGODBURL;
 
 async function connectDB() {
   try {

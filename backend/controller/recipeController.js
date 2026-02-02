@@ -1,6 +1,7 @@
 import Recipe from "../model/recipe.js";
 import User from "../model/user.js"
 import Category from "../model/category.js";
+import Notification from "../model/Notification.js";
 
 const addRecipe = async (req, res) => {
   try {
@@ -31,7 +32,13 @@ const addRecipe = async (req, res) => {
 
     await User.findByIdAndUpdate(req.user._id, { $push: { recipes: recipe._id } });
 
-    res.json({ message: "Recipe added successfully", recipe });
+    //create notification
+    await Notification.create({
+      user: req.user._id,
+      message: "Your recipe has been submitted. Please wait for admin approval."
+    })
+
+    res.status(201).send({ message: "Recipe submitted successfully. Awaiting admin approval.", recipe });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -96,6 +103,7 @@ const updateRecipe = async (req, res) => {
         instruction: JSON.parse(req.body.instruction),
         category: recipeBody.category,
         image,
+        status: "pending"
       },
       {
         new: true,
@@ -131,12 +139,26 @@ const deleteRecipe = async (req, res) => {
 const updateRecipeStatus = async(req, res) => {
   try {
     const  { status } = req.body;
-    const recipe = await Recipe.findById(req.params.id);
+    const recipe = await Recipe.findById(req.params.id).populate('user');
     if (!recipe){
       return res.status(404).send({error: "Recipe not found!!"})
     }
     recipe.status = status;
     await recipe.save();
+
+    //create notification based on status
+    let message = "";
+
+    if(status === "approved"){
+      message = `Your recipe ${recipe.title} has been approved!!`;
+    }else if(status === "rejected"){
+      message = `Your recipe ${recipe.title} has been rejected!!`;
+    }
+
+    await Notification.create({
+      user: recipe.user._id,
+      message
+    })
     res.send({message: `Recipe ${status} successfully!!`})
   } catch (error) {
     res.status(500).send({error: error.message});

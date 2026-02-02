@@ -85,7 +85,7 @@ const CreateRecipe = () => {
         toast.success("Recipe updated successfully");
       } else {
         await addRecipe(data).unwrap();
-        toast.success("Recipe added successfully");
+        toast.success("Recipe Submitted!! Please wait for admin for aprroval!!");
       }
       navigate("/my-recipes")
     } catch (err) {
