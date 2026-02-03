@@ -24,6 +24,7 @@ import AdminUser from './pages/Admin/AdminUser.jsx'
 import AdminCategory from './pages/Admin/AdminCategory.jsx'
 import AdminRecipeID from './pages/Admin/AdminRecipeID.jsx'
 import Notification from './pages/Notification.jsx'
+import AddCategory from './pages/Admin/AddCategory.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -55,6 +56,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='recipes/recipe/:id' element={<AdminRecipeID />}></Route>
         <Route path='users' element={<AdminUser />}></Route>
         <Route path='category' element={<AdminCategory />}></Route>
+        <Route path='addCategory' element={<AddCategory/>}></Route>
         </Route>
       </Route>
     </Routes>
