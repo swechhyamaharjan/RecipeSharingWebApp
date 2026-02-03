@@ -45,4 +45,4 @@ const categoryApiSlice = apiSlice.injectEndpoints({
     })
   })
 })
-export const {useGetCategoriesQuery, useAddCategoryMutation, useUpdateCategoryMutation, useGetCategoryByIdQuery} = categoryApiSlice;
+export const {useGetCategoriesQuery, useAddCategoryMutation, useUpdateCategoryMutation, useGetCategoryByIdQuery, useDeleteCategoryMutation} = categoryApiSlice;
