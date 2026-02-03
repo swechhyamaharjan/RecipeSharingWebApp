@@ -32,25 +32,42 @@ const getAllCategory = async (req, res) => {
     res.status(500).send({ error: "Server Errror", message: error.message });
   }
 }
+const getCategoryById = async(req, res) => {
+  try {
+    const categoryId = req.params.id;
+    const category = await Category.findById(categoryId);
+    if(!category) return res.status(404).send({message: "Category not found"});
+    res.send(category);
+  } catch (error) {
+  res.status(500).send({ error: "Server Errror", message: error.message });
+  }
+}
 
 const updateCategory = async (req, res) => {
   try {
-    const categoryId = req.params.id;
-    const categoryBody = req.body;
-    const category = await Category.findById(categoryId);
+    const { id } = req.params;
+    const category = await Category.findById(id);
     if (!category) {
-      return res.status(404).send({ message: "Category doesn't exists!!" })
+      return res.status(404).json({ message: "Category doesn't exist!" });
     }
-    const updateCategory = await Category.findByIdAndUpdate(
-      categoryId,
-      categoryBody,
-      { new: true }
-    )
-    res.status(200).send({ message: "Category updated successfully", updateCategory });
+    // Update fields
+    category.name = req.body.name || category.name;
+    category.description = req.body.description || category.description;
+
+    // Update image only if new one is uploaded
+    if (req.file) {
+      category.image = req.file.path;
+    }
+    const updatedCategory = await category.save();
+    res.status(200).send({
+      message: "Category updated successfully",
+      updatedCategory
+    });
   } catch (error) {
-    res.status(500).send({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
-}
+};
+
 
 const deleteCategory = async (req, res) => {
   try {
@@ -64,6 +81,5 @@ const deleteCategory = async (req, res) => {
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
-
 }
-export { addCategory, getAllCategory, updateCategory, deleteCategory };
+export { addCategory, getAllCategory, updateCategory, deleteCategory, getCategoryById };

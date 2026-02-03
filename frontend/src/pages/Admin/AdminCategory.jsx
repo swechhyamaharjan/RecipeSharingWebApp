@@ -1,11 +1,10 @@
-import {  useGetCategoriesQuery, useUpdateCategoryMutation } from "../../slices/categoryApiSlice";
+import {  useGetCategoriesQuery } from "../../slices/categoryApiSlice";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { useNavigate } from "react-router";
 
 const AdminCategory = () => {
   const { data: categories = [], isLoading, error } = useGetCategoriesQuery();
-  const [updateCategory] = useUpdateCategoryMutation();
   const navigate = useNavigate();
 
   if(isLoading) return <Loader />
@@ -72,7 +71,8 @@ const AdminCategory = () => {
 
                   {/* Actions */}
                   <div className="flex gap-2">
-                    <button className="flex-1 px-4 py-2.5 text-sm font-medium bg-amber-50 text-amber-700 border border-amber-200 rounded-lg hover:bg-amber-100 hover:border-amber-300 transition-all duration-200 shadow-sm hover:shadow">
+                    <button className="flex-1 px-4 py-2.5 text-sm font-medium bg-amber-50 text-amber-700 border border-amber-200 rounded-lg hover:bg-amber-100 hover:border-amber-300 transition-all duration-200 shadow-sm hover:shadow"
+                    onClick={() => navigate(`/admin/editCategory/${cat._id}`)}>
                       <span className="flex items-center justify-center gap-1.5">
                         Edit
                       </span>

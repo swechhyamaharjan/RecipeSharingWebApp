@@ -57,6 +57,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='users' element={<AdminUser />}></Route>
         <Route path='category' element={<AdminCategory />}></Route>
         <Route path='addCategory' element={<AddCategory/>}></Route>
+        <Route path="editCategory/:id" element={<AddCategory />}></Route>
         </Route>
       </Route>
     </Routes>

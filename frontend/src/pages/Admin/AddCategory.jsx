@@ -1,41 +1,66 @@
-import React, { useState } from 'react'
-import { useAddCategoryMutation } from '../../slices/categoryApiSlice'
+import { useState, useEffect } from 'react'
+import { useAddCategoryMutation, useUpdateCategoryMutation, useGetCategoryByIdQuery } from '../../slices/categoryApiSlice'
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 const AddCategory = () => {
-  const [addCategory, {isLoading}] = useAddCategoryMutation();
+  const { id } = useParams();
+  const [addCategory, { isLoading: adding }] = useAddCategoryMutation();
+  const [updateCategory, { isLoading: updating }] = useUpdateCategoryMutation();
+
   const navigate = useNavigate();
-  
+
+  const isEditMode = Boolean(id);
+  const { data: category } = useGetCategoryByIdQuery(id, { skip: !isEditMode });
+
+  const isSubmitting = adding || updating;
+
+
+  useEffect(() => {
+    if (category && isEditMode) {
+      setFormdata({
+        name: category.name,
+        description: category.description,
+        image: null
+      })
+    }
+  }, [category, isEditMode]);
+
   const [formdata, setFormdata] = useState({
     name: "",
     description: "",
     image: null
   });
-  
-  const handleChange = async(e)=>{
-    const {name, value, files} = e.target;
 
-    if(name === "image"){
-      setFormdata({...formdata, image: files[0]});
-    }else{
-      setFormdata({...formdata, [name]: value})
+  const handleChange = async (e) => {
+    const { name, value, files } = e.target;
+
+    if (name === "image") {
+      setFormdata({ ...formdata, image: files[0] });
+    } else {
+      setFormdata({ ...formdata, [name]: value })
     }
   }
 
-  const submitHandler = async(e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     try {
       const data = new FormData();
       data.append("name", formdata.name);
       data.append("description", formdata.description);
-      data.append("image", formdata.image);
-
-      await addCategory(data).unwrap();
-      toast.success("Category added successfully!!")
+      if (formdata.image) {
+        data.append("image", formdata.image);
+      }
+      if (isEditMode) {
+        await updateCategory({ id, data }).unwrap();
+        toast.success("Category updated successfully!!");
+      } else {
+        await addCategory(data).unwrap();
+        toast.success("Category added successfully!!");
+      }
       navigate("/admin/category");
     } catch (error) {
-      toast.error(error?.data?.error || "Failed to add category!!")
+      toast.error(error?.data?.error || "Operation Failed!!")
     }
   }
 
@@ -45,7 +70,7 @@ const AddCategory = () => {
         {/* Header */}
         <div className='mb-8'>
           <h2 className='text-4xl lg:text-5xl font-bold text-gray-900 mb-2'>
-            Add New Category
+            {isEditMode ? "Update Category" : "Add New Category"}
           </h2>
           <p className='text-gray-600'>
             Create a new category to organize your products
@@ -64,6 +89,7 @@ const AddCategory = () => {
               <input
                 type="text"
                 name="name"
+                value={formdata.name}
                 className="w-full border border-gray-300 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 onChange={handleChange}
                 required
@@ -78,6 +104,7 @@ const AddCategory = () => {
               </label>
               <textarea
                 name="description"
+                value={formdata.description}
                 placeholder="Provide a brief description of this category..."
                 rows="4"
                 className="w-full border border-gray-300 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none"
@@ -106,6 +133,11 @@ const AddCategory = () => {
                     />
                   </label>
                   <p className='text-sm text-gray-500 mt-2'>PNG, JPG, GIF up to 10MB</p>
+                  {formdata.image && (
+                    <p className='mt-2 text-sm text-emerald-600 font-medium'>
+                      Selected file: {formdata.image.name}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -116,25 +148,16 @@ const AddCategory = () => {
               <div className='flex gap-4'>
                 <button
                   type="button"
+                  onClick={() => navigate("/admin/category")}
                   className='flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all'
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className='flex-1 px-6 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                >
-                  {isLoading ? (
-                    <span className='flex items-center justify-center gap-2'>
-                      Adding...
-                    </span>
-                  ) : (
-                    <span className='flex items-center justify-center gap-2'>
-                      Add Category
-                    </span>
-                  )}
+                <button type="submit" disabled={isSubmitting}>
+                 {isSubmitting ? isEditMode ? "Updating..." : "Adding..."
+                : isEditMode ? "Update Category" : "Add Category"}
                 </button>
+
               </div>
             </div>
           </form>
