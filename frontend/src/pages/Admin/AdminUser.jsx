@@ -53,8 +53,9 @@ const AdminUser = () => {
   if (error) return <Message>{error.message || "Failed to load users"}</Message>
 
   return (
-    <div className='min-h-screen p-6 bg-gray-50'>
-        <h1 className='text-3xl font-bold mb-8 text-gray-800'>All Users</h1>
+    <div className='min-h-screen p-6'>
+      <div className="max-w-7xl mx-auto p-6 lg:p-8">
+        <h1 className='text-4xl lg:text-5xl font-bold text-gray-900 mb-10'>All Users</h1>
 
         {/* Search and Sort Controls */}
         <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6'>
@@ -174,6 +175,7 @@ const AdminUser = () => {
               </tbody>
             </table>
           </div>
+        </div>
         </div>
     </div>
   )

@@ -24,17 +24,17 @@ const AdminCategory = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto p-6 lg:p-8">
         {/* Header */}
         <div className="mb-10">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
+              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
                 Manage Categories
               </h2>
               <p className="text-gray-600 text-sm lg:text-base">
-                Organize and manage your product categories
+                Organize and manage your recipe categories
               </p>
             </div>
             <button className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"

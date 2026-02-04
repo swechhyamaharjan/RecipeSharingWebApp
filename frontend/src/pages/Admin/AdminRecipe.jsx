@@ -38,13 +38,14 @@ const AdminRecipe = () => {
   if (error) return <Message>{error.message || "Failed to load recipes"}</Message>
 
   return (
-    <div className='min-h-screen p-6 bg-gray-50'>
+    <div className='min-h-screen p-6'>
+       <div className="max-w-7xl mx-auto p-6 lg:p-8">
         {/* Header */}
-        <div className='mb-8'>
-          <h1 className='text-4xl font-bold text-gray-900 mb-2'>
+        <div className='mb-10'>
+          <h1 className='text-4xl lg:text-5xl font-bold text-gray-900 mb-3'>
             Recipe Moderation
           </h1>
-          <p className='text-gray-600'>Review and manage submitted recipes</p>
+          <p className='text-gray-600 text-sm lg:text-base'>Review and manage submitted recipes</p>
         </div>
 
         {/* Filter Tabs */}
@@ -175,6 +176,7 @@ const AdminRecipe = () => {
             </p>
           </div>
         )}
+        </div>
       </div>
   )
 }

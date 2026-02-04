@@ -65,17 +65,13 @@ const AddCategory = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 py-8 px-4'>
-      <div className='max-w-2xl mx-auto'>
+    <div className='min-h-screen py-8 px-4'>
+      <div className="max-w-2xl mx-auto p-6 lg:p-8">
         {/* Header */}
-        <div className='mb-8'>
-          <h2 className='text-4xl lg:text-5xl font-bold text-gray-900 mb-2'>
+
+          <h2 className='text-4xl lg:text-5xl font-bold text-gray-900 mb-8'>
             {isEditMode ? "Update Category" : "Add New Category"}
           </h2>
-          <p className='text-gray-600'>
-            Create a new category to organize your products
-          </p>
-        </div>
 
         {/* Form Card */}
         <div className='bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden'>
@@ -153,7 +149,8 @@ const AddCategory = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" disabled={isSubmitting}>
+                <button type="submit" disabled={isSubmitting}
+                 className='flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5l'>
                  {isSubmitting ? isEditMode ? "Updating..." : "Adding..."
                 : isEditMode ? "Update Category" : "Add Category"}
                 </button>

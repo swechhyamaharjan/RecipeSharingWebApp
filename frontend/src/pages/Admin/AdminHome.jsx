@@ -13,13 +13,14 @@ const AdminHome = () => {
   const { data: favorites = [] } = useAllfavoritesQuery();
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 min-h-screen">
+       <div className="max-w-full mx-auto p-6 lg:p-8">
       {/* Page Title */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
+        <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
           Admin Dashboard
         </h1>
-        <p className="text-md text-zinc-400 mt-8">
+        <p className="text-xl text-zinc-400 mt-8">
           Welcome, <span className="text-emerald-400 font-medium">{userInfo?.fullname}</span>
         </p>
       </div>
@@ -122,7 +123,7 @@ const AdminHome = () => {
               ))}
           </ul>
         </div>
-
+      </div>
       </div>
     </div>
   );
