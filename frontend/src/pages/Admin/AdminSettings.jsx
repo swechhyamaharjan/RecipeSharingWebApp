@@ -117,6 +117,60 @@ const AdminSettings = () => {
 
             </div>
           )}
+
+          {/* System Info Tab */}
+          {activeTab === 'system' && (
+            <div className='space-y-6'>
+              <div className='bg-white border border-gray-200 rounded-xl p-6 shadow-sm'>
+                <h3 className='text-xl font-bold text-gray-900 mb-4 flex items-center gap-2'>
+                  <FaInfoCircle className='text-emerald-600' />
+                  Application Information
+                </h3>
+                <div className='space-y-4'>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                    <div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+                      <p className='text-gray-600 text-sm mb-1'>Application Name</p>
+                      <p className='text-gray-900 font-semibold'>RecipeHub</p>
+                    </div>
+                    <div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+                      <p className='text-gray-600 text-sm mb-1'>Version</p>
+                      <p className='text-gray-900 font-semibold'>1.0.0</p>
+                    </div>
+                    <div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+                      <p className='text-gray-600 text-sm mb-1'>Environment</p>
+                      <p className='text-gray-900 font-semibold'>Production</p>
+                    </div>
+                    <div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+                      <p className='text-gray-600 text-sm mb-1'>Admin Role</p>
+                      <p className='text-emerald-600 font-semibold'>{userInfo?.isAdmin ? 'Administrator' : 'User'}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className='bg-white border border-gray-200 rounded-xl p-6 shadow-sm'>
+                <h3 className='text-xl font-bold text-gray-900 mb-4'>Tech Stack</h3>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+                    <p className='text-gray-600 text-sm mb-1'>Frontend</p>
+                    <p className='text-gray-900 font-semibold'>React + Vite + TailwindCSS</p>
+                  </div>
+                  <div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+                    <p className='text-gray-600 text-sm mb-1'>Backend</p>
+                    <p className='text-gray-900 font-semibold'>Node.js + Express + MongoDB</p>
+                  </div>
+                  <div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+                    <p className='text-gray-600 text-sm mb-1'>State Management</p>
+                    <p className='text-gray-900 font-semibold'>Redux Toolkit (RTK Query)</p>
+                  </div>
+                  <div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+                    <p className='text-gray-600 text-sm mb-1'>Image Storage</p>
+                    <p className='text-gray-900 font-semibold'>Cloudinary</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
