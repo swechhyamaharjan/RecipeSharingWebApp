@@ -56,8 +56,8 @@ const AdminRecipe = () => {
               onClick={() => setFilter(status)}
               className={`px-6 py-2.5 rounded-xl font-medium transition-all capitalize ${
                 filter === status
-                  ? 'bg-green-400 text-white shadow-md shadow-blue-200'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-blue-200 cursor-pointer'
+                  : 'text-gray-600 hover:bg-gray-100 cursor-pointer'
               }`}
             >
               {status}
@@ -88,9 +88,9 @@ const AdminRecipe = () => {
                   <span
                     className={`px-4 py-1.5 text-xs font-semibold rounded-full shadow-lg backdrop-blur-sm ${
                       recipe.status === "approved"
-                        ? "bg-green-400 text-white"
+                        ? "bg-emerald-600 text-white"
                         : recipe.status === "rejected"
-                        ? "bg-red-400 text-white"
+                        ? "bg-red-500 text-white"
                         : "bg-yellow-400 text-yellow-900"
                     }`}
                   >
@@ -123,7 +123,7 @@ const AdminRecipe = () => {
                 {/* Meta Info */}
                 <div className='flex items-center gap-4 mb-5 pb-5 border-b border-gray-100'>
                   <div className='flex items-center gap-2 text-sm text-gray-600'>
-                    <div className='w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-semibold'>
+                    <div className='w-8 h-8 rounded-full bg-emrald-500 flex items-center justify-center text-white text-xs font-semibold'>
                       {recipe.user?.fullname?.charAt(0) || "U"}
                     </div>
                     <span className='font-medium'>{recipe.user?.fullname || "Unknown User"}</span>
@@ -140,7 +140,7 @@ const AdminRecipe = () => {
                   <button
                     disabled={recipe.status === 'approved'}
                     onClick={()=>{statusHandler(recipe._id, "approved")}}
-                    className='flex-1 flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all font-medium shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm'
+                    className='flex-1 flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all font-medium shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm'
                   >
                     <FaCheck className='text-sm' />
                     Approve
