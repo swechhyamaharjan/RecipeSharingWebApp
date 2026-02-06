@@ -20,8 +20,8 @@ const AdminHome = () => {
         <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
           Admin Dashboard
         </h1>
-        <p className="text-xl text-zinc-400 mt-8">
-          Welcome, <span className="text-emerald-400 font-medium">{userInfo?.fullname}</span>
+        <p className="text-xl text-zinc-600 mt-8">
+          Welcome, <span className="text-emerald-600 font-medium">{userInfo?.fullname}</span>
         </p>
       </div>
 
@@ -35,7 +35,7 @@ const AdminHome = () => {
               <p className="text-gray-500 text-sm">Total Users</p>
               <h2 className="text-2xl font-bold text-gray-800">{users.length}</h2>
             </div>
-            <div className="bg-green-100 text-green-600 p-3 rounded-full">
+            <div className="bg-emerald-100 text-emerald-600 p-3 rounded-full">
               <FaUsers size={22} />
             </div>
           </div>

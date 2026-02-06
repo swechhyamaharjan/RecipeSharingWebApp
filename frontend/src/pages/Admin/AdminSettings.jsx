@@ -1,10 +1,51 @@
 import { useState } from 'react'
 import { FaUser, FaLock, FaInfoCircle } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useUpdateProfileMutation } from '../../slices/userapiSlice';
+import { setCredentials } from '../../slices/authSlice';
+import { toast } from 'react-toastify';
 
 const AdminSettings = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const {userInfo} = useSelector((state)=>state.auth);
+  const [updateProfile] = useUpdateProfileMutation();
+
+  const dispatch = useDispatch();
+
+  const [profile, setProfile] = useState({
+    fullname: userInfo?.fullname || "",
+    email: userInfo?.email || "",
+    newPassword: "",
+    confirmPassword: ""
+  })
+  
+  const handleChange = async(e)=>{
+    setProfile({
+      ...profile, 
+      [e.target.name]: e.target.value
+    });
+  }
+
+ const updateProfileHandler = async (e) => {
+  e.preventDefault();
+
+  if (profile.newPassword && profile.newPassword !== profile.confirmPassword) {
+    toast.error("Passwords do not match");
+    return;
+  }
+  try {
+    const res = await updateProfile({
+      fullname: profile.fullname,
+      email: profile.email,
+      password: profile.newPassword,
+    }).unwrap();
+
+    toast.success(res.message)
+    dispatch(setCredentials({ ...userInfo, ...res.user }))
+  } catch (err) {
+    toast.error(err?.data?.message || "Update failed");
+  }
+};
 
   return (
     <div className='min-h-screen p-6'>
@@ -50,12 +91,14 @@ const AdminSettings = () => {
                   Profile Information
                 </h3>
               
-              <form className='space-y-4'>
+              <form className='space-y-4' onSubmit={updateProfileHandler}>
                 <div>
                   <label className='block text-gray-700 font-medium mb-2'>Fullname</label>
                   <input
                       type='text'
                       name='fullname'
+                      onChange={handleChange}
+                      value={profile.fullname}
                       className='w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent' />
                 </div>
 
@@ -64,6 +107,8 @@ const AdminSettings = () => {
                   <input
                       type='email'
                       name='email'
+                      onChange={handleChange}
+                      value={profile.email}
                       className='w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent' />
                 </div>
                 <button
@@ -81,20 +126,13 @@ const AdminSettings = () => {
                   <FaLock className='text-emerald-600' />
                   Change Password
                 </h3>
-                <form className='space-y-4'>
-                  <div>
-                    <label className='block text-gray-700 font-medium mb-2'>Current Password</label>
-                    <input
-                      type='password'
-                      name='currentPassword'
-                      className='w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent'
-                    />
-                  </div>
+                <form className='space-y-4' onSubmit={updateProfileHandler}>
                   <div>
                     <label className='block text-gray-700 font-medium mb-2'>New Password</label>
                     <input
                       type='password'
                       name='newPassword'
+                      onChange={handleChange}
                       className='w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent'
                     />
                   </div>
@@ -103,6 +141,7 @@ const AdminSettings = () => {
                     <input
                       type='password'
                       name='confirmPassword'
+                      onChange={handleChange}
                       className='w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent'
                     />
                   </div>

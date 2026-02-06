@@ -27,7 +27,7 @@ const AdminSidebar = () => {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                 isActive
-                  ? "bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500"
+                  ? "bg-emerald-500/10 text-emerald-600 border-l-4 border-emerald-700"
                   : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100 border-l-4 border-transparent"
               }`
             }
