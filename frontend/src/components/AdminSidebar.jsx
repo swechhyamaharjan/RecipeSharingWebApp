@@ -1,7 +1,12 @@
 import { NavLink, useNavigate } from "react-router";
 import { FaTachometerAlt, FaUsers, FaUtensils, FaFolderOpen, FaSignOutAlt, FaCog } from "react-icons/fa";
+import { useLogoutMutation } from "../slices/userapiSlice";
+import { toast } from "react-toastify";
+import { removeCredentials } from "../slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const AdminSidebar = () => {
+  const [logout] = useLogoutMutation();
   const navItems = [
     { to: "/admin", label: "Dashboard", icon: FaTachometerAlt, end: true },
     { to: "/admin/users", label: "Users", icon: FaUsers },
@@ -9,6 +14,18 @@ const AdminSidebar = () => {
     { to: "/admin/category", label: "Categories", icon: FaFolderOpen },
   ];
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const logoutHandler = async()=>{
+    try {
+      await logout().unwrap();
+      dispatch(removeCredentials());
+      toast.success("Logged out success!!");
+      navigate("/")
+    } catch (error) {
+      toast.error(error?.data?.error || "Error while logging out!!")
+    } 
+  }
 
   return (
     <aside className="w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col fixed h-screen">
@@ -49,7 +66,8 @@ const AdminSidebar = () => {
           <FaCog className="text-xl" />
           <span className="font-medium">Settings</span>
         </button>
-        <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-all duration-200 w-full border-l-4 border-red-500">
+        <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-all duration-200 w-full border-l-4 border-red-500"
+        onClick={logoutHandler}>
           <FaSignOutAlt className="text-xl" />
           <span className="font-medium">Sign Out</span>
         </button>

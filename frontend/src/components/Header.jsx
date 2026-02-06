@@ -2,7 +2,7 @@ import { NavLink } from "react-router";
 import { FaPlus, FaUserCircle, FaSearch, FaBars, FaTimes, FaBell } from "react-icons/fa";
 import logo from "../assets/logo.jpg";
 import { useSelector, useDispatch } from "react-redux"
-import { removeCredentails } from "../slices/authSlice";
+import { removeCredentials } from "../slices/authSlice";
 import { useLogoutMutation } from "../slices/userapiSlice";
 import { useGetMyNotificationQuery } from "../slices/notificationApiSlice";
 import { toast } from "react-toastify";
@@ -13,7 +13,7 @@ import { useState, useEffect } from "react";
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [logout] = useLogoutMutation();
-  const {data: notifications = []} = useGetMyNotificationQuery();
+  const {data: notifications = []} = useGetMyNotificationQuery({ skip: !userInfo});
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,7 +47,7 @@ const Header = () => {
   const logoutHandler = async()=>{
     try {
       await logout().unwrap();
-      dispatch(removeCredentails())
+      dispatch(removeCredentials())
       navigate("/")
       setMobileMenuOpen(false);
     } catch (error) {
