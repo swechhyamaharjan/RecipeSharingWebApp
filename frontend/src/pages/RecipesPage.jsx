@@ -75,7 +75,7 @@ const RecipePage = () => {
             </div>
 
             {/* Description */}
-            <div className="h-8 mb-4">
+            <div className="h-8 mb-8">
               {recipe.description && (
                 <p className="text-gray-600 text-sm line-clamp-3">
                   {recipe.description}

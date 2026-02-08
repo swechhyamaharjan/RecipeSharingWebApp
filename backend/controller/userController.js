@@ -26,11 +26,11 @@ const signup = async (req, res) => {
 }
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
   const user = await User.findOne({ email });
   if (!user) return res.status(400).send({ error: "User doesn't exits of this email!" })
   if (await user.matchedPassword(password)) {
-    createToken(res, user._id)
+    createToken(res, user._id, rememberMe)
     res.send({
       message: "Login success", user: {
         _id: user._id,
