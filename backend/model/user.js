@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+   otp: {
+    type: String,
+    required: false
+  },
     favorites: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }
   ],
