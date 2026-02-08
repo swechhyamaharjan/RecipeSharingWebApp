@@ -46,23 +46,23 @@ const login = async (req, res) => {
   }
 }
 
-const logout = async(req, res) => {
-  if(req.user){
+const logout = async (req, res) => {
+  if (req.user) {
     res.clearCookie('jwt');
-    res.send({message: "Logout success!"})
+    res.send({ message: "Logout success!" })
   }
-  else{
-    res.status(400).send({error: "You are not logged in!"})
+  else {
+    res.status(400).send({ error: "You are not logged in!" })
   }
 }
 
 const getUserFavorite = async (req, res) => {
   try {
-    const userId = req.user._id; 
-     const user = await User.findById(userId)
+    const userId = req.user._id;
+    const user = await User.findById(userId)
       .populate({
         path: "favorites",
-        populate: { path: "category", select: "name" }, 
+        populate: { path: "category", select: "name" },
       });
     if (!user) return res.status(404).send({ error: "User not found!!" });
     res.send(user.favorites);
@@ -88,19 +88,19 @@ const getAllFavorites = async (req, res) => {
 };
 
 
-const updateProfile = async(req, res)=>{
+const updateProfile = async (req, res) => {
   const userId = req.user._id;
   const user = await User.findById(userId);
-  if (!user) return res.send({error: "User not found"})
-   
-    user.fullname = req.body.fullname || user.fullname;
-    user.email = req.body.email || user.email;
+  if (!user) return res.send({ error: "User not found" })
 
-  if(req.body.password){
+  user.fullname = req.body.fullname || user.fullname;
+  user.email = req.body.email || user.email;
+
+  if (req.body.password) {
     user.password = req.body.password;
   }
   const updatedUser = await user.save();
-   
+
   res.send({
     message: "Profile Updated",
     user: {
@@ -119,19 +119,19 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const sendOTP = async(req, res)=>{
+const sendOTP = async (req, res) => {
   try {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
-    if(!user) return res.status(404).send({error: "No user found for provided email!!"})
+    if (!user) return res.status(404).send({ error: "No user found for provided email!!" })
 
     const OTP = Math.floor(100000 + Math.random() * 900000);
     const otpExpiration = new Date(Date.now() + 2 * 60 * 1000);
 
     const hashedOtp = await bcrypt.hash(`${OTP}`, 10);
 
-    await User.findOneAndUpdate({email}, { otp: hashedOtp, otpExpiresAt: otpExpiration}, {upsert: true, new: true});
+    await User.findOneAndUpdate({ email }, { otp: hashedOtp, otpExpiresAt: otpExpiration },  { new: true });
 
     const transporter = nodemailer.createTransport({
       service: "Gmail",
@@ -159,32 +159,47 @@ const sendOTP = async(req, res)=>{
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(200).send({message: "OTP sent successfully!!"})
+    res.status(200).send({ message: "OTP sent successfully!!" })
   } catch (error) {
     res.status(500).send({ message: "Unable to send OTP" });
     console.error("Error sending OTP email:", error);
   }
 }
 
-const verifyOTP = async(req, res)=>{
+const verifyOTP = async (req, res) => {
   try {
-    const {email, otpCode} = req.body;
+    const { email, otpCode } = req.body;
     const user = await User.findOne({ email });
-    if(!user) return res.status(404).send({message: "No user found for provided email"})
-  
-    if(user.otpExpiresAt < new Date()) return res.status(400).send({message: "Otp has expired please try again" });
+    if (!user) return res.status(404).send({ message: "No user found for provided email" })
+
+    if (user.otpExpiresAt < new Date()) return res.status(400).send({ message: "Otp has expired please try again" });
 
     const validOtp = await bcrypt.compare(otpCode.toString(), user.otp);
 
-    if(!validOtp) return res.status(404).send({ message: "Invalid Otp Code" });
-    
+    if (!validOtp) return res.status(400).send({ message: "Invalid Otp Code" });
+
     await User.findByIdAndUpdate(user._id, { $unset: { otp: 1, otpExpiresAt: 1 } });
-    res.status(200).send({message: "Otp Verification Successful" });
+    res.status(200).send({ message: "Otp Verification Successful" });
   } catch (error) {
     res.status(500).send({ message: "Failed to Verify Otp" });
     console.error("Error Verifying Otp:", error);
   }
-} 
+}
 
-export { signup, login, logout, getUserFavorite, updateProfile, getAllUsers, getAllFavorites, sendOTP, verifyOTP};
+const resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await User.findOneAndUpdate({ email } , {password: hashedPassword} );
+    if (!user) return res.status(404).send({ message: "No user found for provided user" });
+    res.status(200).send({ message: "Password reset successfully you can login now" });
+  } catch (error) {
+    res.status(500).send({ message: "Failed to reset the password" });
+    console.error("Error Resetting Password", error);
+  }
+}
+
+export { signup, login, logout, getUserFavorite, updateProfile, getAllUsers, getAllFavorites, sendOTP, verifyOTP, resetPassword };
 

@@ -51,6 +51,27 @@ const userApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["User"]
+    }),
+    sendOtp: builder.mutation({
+      query: (data)=>({
+        url: `${USER_URL}/sendOtp`,
+        method: "POST",
+        body: data
+      })
+    }),
+    verifyOtp: builder.mutation({
+      query: (data)=>({
+        url: `${USER_URL}/verifyOtp`,
+        method: "POST",
+        body: data
+      })
+    }),
+    resetPassword: builder.mutation({
+      query: (data)=>({
+        url: `${USER_URL}/resetPassword`,
+        method: "POST",
+        body: data
+      })
     })
    })
 })
