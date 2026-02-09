@@ -88,7 +88,7 @@ const sampleRecipes = [
       "Combine all ingredients.",
       "Bake at 180°C for 25 minutes."
     ],
-    image: "/images/.jpeg",
+    image: "/images/Dessert.jpeg",
     status: "pending",
     averageRating: 0,
     numReviews: 0,

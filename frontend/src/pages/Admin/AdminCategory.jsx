@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
 const AdminCategory = () => {
-  const { data: categories = [], isLoading, error } = useGetCategoriesQuery();
+  const { data: categories, isLoading, error } = useGetCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
   const navigate = useNavigate();
 
@@ -63,6 +63,7 @@ const AdminCategory = () => {
                 key={cat._id}
                 className="group bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-emerald-400 transform hover:-translate-y-1"
               >
+              
                 {/* Image */}
                 <div className="relative h-48 bg-gray-100 overflow-hidden">
                   <img
@@ -70,6 +71,7 @@ const AdminCategory = () => {
                     alt={cat.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
+                  {console.log(cat.image)}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
                 </div>
 
