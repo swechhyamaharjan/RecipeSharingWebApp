@@ -5,8 +5,4 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-connectDB().then(() => {
-  app.listen((PORT), () =>
-    console.log("Server is up and running at PORT", PORT)
-  );
-});
+await connectDB();
