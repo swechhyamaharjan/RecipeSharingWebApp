@@ -11,6 +11,11 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/api/test", (req, res) => {
+  res.send("API is running 🚀");
+});
+
+
 app.use(cookieParser());
 app.use("/api/users", userRouter);
 app.use("/api/recipes", recipeRouter);
