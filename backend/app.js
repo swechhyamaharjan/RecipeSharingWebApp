@@ -21,6 +21,10 @@ app.use(cors({
   credentials: true,
 }));
 
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
 app.use("/api/users", userRouter);
 app.use("/api/recipes", recipeRouter);
 app.use("/api/comments", commentRouter);
