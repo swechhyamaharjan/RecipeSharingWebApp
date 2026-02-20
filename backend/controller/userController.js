@@ -48,7 +48,11 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   if (req.user) {
-    res.clearCookie('jwt');
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: process.env.NODE_ENV !== "development" ? "None" : "Lax",
+    });
     res.send({ message: "Logout success!" })
   }
   else {
@@ -131,7 +135,7 @@ const sendOTP = async (req, res) => {
 
     const hashedOtp = await bcrypt.hash(`${OTP}`, 10);
 
-    await User.findOneAndUpdate({ email }, { otp: hashedOtp, otpExpiresAt: otpExpiration },  { new: true });
+    await User.findOneAndUpdate({ email }, { otp: hashedOtp, otpExpiresAt: otpExpiration }, { new: true });
 
     const transporter = nodemailer.createTransport({
       service: "Gmail",
@@ -192,7 +196,7 @@ const resetPassword = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const user = await User.findOneAndUpdate({ email } , {password: hashedPassword} );
+    const user = await User.findOneAndUpdate({ email }, { password: hashedPassword });
     if (!user) return res.status(404).send({ message: "No user found for provided user" });
     res.status(200).send({ message: "Password reset successfully you can login now" });
   } catch (error) {
