@@ -4,10 +4,7 @@ const getMyNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({
       user: req.user._id,
-      message: {
-        $ne: "Your recipe has been submitted. Please wait for admin approval."
-      }
-    }).sort({ createdAt: -1 }); 
+    }).sort({ createdAt: -1 });
 
     res.status(200).json(notifications);
   } catch (error) {
