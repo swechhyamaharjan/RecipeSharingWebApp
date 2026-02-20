@@ -219,11 +219,11 @@ const Recipe = () => {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                        {comment.user.fullname[0].toUpperCase()}
+                         {comment.user?.fullname ? comment.user.fullname[0].toUpperCase() : "?"}
                       </div>
                       <div>
                         <span className="font-semibold text-stone-800 block">
-                          {comment.user.fullname}
+                          {comment.user?.fullname || "Unknown User"}
                         </span>
                         <span className="text-xs text-stone-500">
                           {new Date(comment.createdAt).toLocaleDateString()}
@@ -238,7 +238,7 @@ const Recipe = () => {
                   <p className="text-stone-600 leading-relaxed mb-4">{comment.text}</p>
 
                   {/* Show delete button only if current user owns the comment */}
-                  {userInfo && comment.user._id === userInfo._id && (
+                  {userInfo && comment.user?._id === userInfo._id && (
                     <div className="flex justify-end pt-2 border-t border-stone-200">
                       <button
                         onClick={() => handleDeleteComment(comment._id)}
