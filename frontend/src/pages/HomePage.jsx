@@ -68,7 +68,7 @@ const HomePage = () => {
                   <div className="absolute top-3 right-3 flex gap-2">
                     <div className="flex items-center gap-1 bg-white px-2 py-1 rounded shadow">
                       <FaStar className="text-yellow-500 text-sm" />
-                      <span className="text-sm font-semibold">{recipe.averageRating || 0}</span>
+                      <span className="text-sm font-semibold">{(recipe.averageRating).toFixed(2) || 0}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-white px-2 py-1 rounded shadow">
                       <FaHeart className="text-red-500 text-sm" />
@@ -111,7 +111,7 @@ const HomePage = () => {
                   <div className="flex items-center justify-between pt-3 border-t border-gray-200">
                     <div className="flex items-center gap-1">
                       <FaStar className="text-yellow-500" />
-                      <span className="text-sm font-semibold text-gray-700">{recipe.averageRating || 0}</span>
+                      <span className="text-sm font-semibold text-gray-700">{(recipe.averageRating).toFixed(2) || 0}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <FaHeart className="text-red-500" />
