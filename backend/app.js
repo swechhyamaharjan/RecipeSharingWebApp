@@ -6,17 +6,21 @@ import commentRouter from "./router/commentRouter.js"
 import categoryRouter from "./router/categoryRouter.js"
 import contactRouter from "./router/contactRouter.js"
 import notificationRouter from "./router/notificationRouter.js"
+import cors from "cors";
 
 const app = express();
 
+app.use(cookieParser());
+
 app.use(express.json());
 
-app.get("/api/test", (req, res) => {
-  res.send("API is running 🚀");
-});
 
 
-app.use(cookieParser());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
+
 app.use("/api/users", userRouter);
 app.use("/api/recipes", recipeRouter);
 app.use("/api/comments", commentRouter);
