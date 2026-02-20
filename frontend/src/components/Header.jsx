@@ -13,7 +13,10 @@ import { useState, useEffect } from "react";
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [logout] = useLogoutMutation();
-  const {data: notifications = []} = useGetMyNotificationQuery({ skip: !userInfo});
+  const { data: notifications = [] } = useGetMyNotificationQuery(undefined, {
+    pollingInterval: 5000,
+    skip: !userInfo
+  });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,20 +34,20 @@ const Header = () => {
         navigate("/recipes");
       }
     }, 500); // 500ms delay for debouncing
-     return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, [keyword, navigate]);
 
-  const searchHandler = async(e)=>{
+  const searchHandler = async (e) => {
     e.preventDefault();
-    if(keyword.trim()){
+    if (keyword.trim()) {
       navigate(`/recipes?keyword=${keyword}`);
       setMobileMenuOpen(false);
-    }else{
+    } else {
       navigate("/recipes");
     }
   }
 
-  const logoutHandler = async()=>{
+  const logoutHandler = async () => {
     try {
       await logout().unwrap();
       dispatch(removeCredentials())
@@ -72,10 +75,10 @@ const Header = () => {
               type="text"
               placeholder="Search recipes..."
               value={keyword}
-              onChange={(e)=>setKeyword(e.target.value)}
+              onChange={(e) => setKeyword(e.target.value)}
               className="pl-10 pr-4 py-2 w-64 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" onClick={searchHandler}/>
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" onClick={searchHandler} />
           </form>
 
           {/* Nav Links */}
@@ -119,7 +122,7 @@ const Header = () => {
             <FaPlus />
             <span className="hidden sm:inline">Create</span>
           </NavLink>
-          
+
           {!userInfo ? (
             <NavLink to="/signin">
               <button className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm sm:text-base">
@@ -143,7 +146,7 @@ const Header = () => {
                   Profile
                 </NavLink>
 
-                 <NavLink
+                <NavLink
                   to="/my-recipes"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" >
                   My Recipes
@@ -166,7 +169,7 @@ const Header = () => {
           )}
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden text-gray-700 text-2xl"
           >
@@ -185,10 +188,10 @@ const Header = () => {
                 type="text"
                 placeholder="Search recipes..."
                 value={keyword}
-                onChange={(e)=>setKeyword(e.target.value)}
+                onChange={(e) => setKeyword(e.target.value)}
                 className="pl-10 pr-4 py-2 w-full rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" onClick={searchHandler}/>
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" onClick={searchHandler} />
             </form >
           </div>
 
@@ -223,7 +226,7 @@ const Header = () => {
                   {userInfo.fullname}
                 </span>
               </div>
-              
+
               <div className="space-y-1 mt-2">
                 <NavLink
                   to="/profile"
