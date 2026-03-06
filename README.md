@@ -29,3 +29,81 @@ Admins review submitted recipes and approve or reject them to maintain the quali
   - JWT Authentication
   - Cloudinary (Image Upload)
   - Nodemailer (Email Service)
+## ⚙️ Backend Architecture
+
+The backend follows a **modular MVC architecture** for scalability and maintainability.
+
+Models:
+
+- User
+  - name, email, password, profile image
+  - favorites, created recipes, role (user/admin)
+
+- Recipe
+  - title, description, ingredients, instructions
+  - images, category, ratings, likes, status (pending / approved / rejected)
+
+- Category
+  - name, description
+
+- Comment
+  - user, recipe, comment, rating
+
+- Notification
+  - user, message, type, read status
+
+Controllers:
+
+- User Controller
+- Recipe Controller
+- Category Controller
+- Comment Controller
+- Notification Controller
+- Contact Controller
+
+Middlewares:
+
+- checkAuth          → verifies JWT for authentication
+- checkAdmin         → allows only admins to access certain routes
+- validationHandler  → validates request data with Zod schemas
+
+## 💻 Frontend Architecture
+The frontend is built with React + Vite and uses Redux Toolkit + RTK Query for state management and API communication.
+Pages:
+
+- Public Pages
+  - Home
+  - Recipes
+  - Recipe Detail
+  - About
+  - Contact
+  - Sign In
+  - Register
+
+- Protected Pages
+  - Create Recipe
+  - Edit Recipe
+  - My Recipes
+  - Bookmarks
+  - Profile
+  - Notifications
+
+- Admin Pages
+  - Admin Dashboard
+  - Manage Users
+  - Manage Recipes
+  - Manage Categories
+ 
+Components:
+
+- Header -> search, notifications, mobile menu
+- Footer
+- AdminSidebar
+- Loader
+- Message
+- Rating
+
+
+
+
+
