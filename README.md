@@ -115,7 +115,7 @@ Components:
   
 ## 🚀 Installation
 **1️⃣ Clone the repository**
-  - git clone = https://github.com/yourusername/recipe-sharing-app.git
+  - git clone = https://github.com/swechhyamaharjan/RecipeSharingWebApp
 
  **2️⃣ Install dependencies**
   - Backend
