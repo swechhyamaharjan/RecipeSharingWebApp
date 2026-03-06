@@ -103,6 +103,45 @@ Components:
 - Message
 - Rating
 
+## ⭐ Key Features
+- 🔐 Authentication: JWT login/registration with cookies
+- 📷 Recipe Creation: Upload recipes with images, ingredients, and instructions
+- 👍 Like & Bookmark: Save favorite recipes
+- 💬 Comment & Rating System: Star ratings and reviews
+- 🔎 Real-Time Search: Search with debouncing
+- 🛡 Admin Moderation: Approve/reject recipes, manage users and categories
+- 🔔 Notifications: Updates for recipe approvals and other events
+- 📱 Responsive Design: Fully responsive using TailwindCSS
+  
+## 🚀 Installation
+**1️⃣ Clone the repository**
+  - git clone = https://github.com/yourusername/recipe-sharing-app.git
+
+ **2️⃣ Install dependencies**
+  - Backend
+    - cd backend
+    - npm install
+- Frontend
+    - cd frontend
+    - npm install
+
+**3️⃣ Setup Environment Variables**
+
+Create a .env file in the backend folder:
+- PORT=5000
+- MONGO_URI=your_mongodb_connection
+- JWT_SECRET=your_secret_key
+- CLOUDINARY_CLOUD_NAME=your_cloud_name
+- CLOUDINARY_API_KEY=your_api_key
+- CLOUDINARY_API_SECRET=your_api_secret
+- EMAIL_USER=your_email
+- EMAIL_PASS=your_email_password
+
+**4️⃣ Run the Application**
+- Backend
+    - npm run server
+- Frontend
+    - npm run dev
 
 
 
